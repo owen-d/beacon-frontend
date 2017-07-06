@@ -6,6 +6,7 @@ import Json.Decode as Decode
 import Http
 
 
+main : Program Never Model Msg
 main =
     Html.program
         { init = init
@@ -21,7 +22,7 @@ main =
 
 type alias Model =
     { user : Maybe User
-    , beacons : List Beacon
+    , beacons : Beacons
     , jwt : String
     }
 
@@ -39,8 +40,8 @@ type alias Beacon =
     }
 
 
-type Beacons
-    = List Beacon
+type alias Beacons =
+    List Beacon
 
 
 init : ( Model, Cmd Msg )
@@ -53,19 +54,15 @@ init =
 
 
 type Msg
-    = Nothing
-    | FetchBeacons
+    = FetchBeacons
     | NewBeacons (Result Http.Error Beacons)
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
-        Nothing ->
-            ( model, Cmd.none )
-
         FetchBeacons ->
-            ( model, fetchBeacons model.auth.jwt )
+            ( model, fetchBeacons model.jwt )
 
         NewBeacons res ->
             case res of
@@ -89,7 +86,7 @@ subscriptions model =
 -- VIEW
 
 
-view : Model -> Html.Html msg
+view : Model -> Html.Html Msg
 view model =
     Html.div []
         [ Html.button [ Html.Events.onClick FetchBeacons ] [ Html.text "fetch beacons" ]
