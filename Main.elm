@@ -2,8 +2,9 @@ module Main exposing (..)
 
 import Html
 import Html.Events
-import Json.Decode as Decode
 import Http
+import Json.Decode as Decode
+import Time
 
 
 main : Program Never Model Msg
@@ -107,13 +108,22 @@ viewBeacon bkn =
 -- HTTP
 
 
-fetchBeacons : string -> Cmd Msg
+fetchBeacons : String -> Cmd Msg
 fetchBeacons jwt =
     let
         url =
             "http://localhost:8080/beacons/"
     in
-        Http.send NewBeacons (Http.get url decodeBeacons)
+        Http.send NewBeacons
+            (authReq
+                (Just jwt)
+                { defaultReqParams | url = url }
+                decodeBeacons
+            )
+
+
+
+-- (Http.get url decodeBeacons)
 
 
 decodeBeacons : Decode.Decoder Beacons
@@ -126,3 +136,44 @@ decodeBeacons =
                 (Decode.field "deployName" Decode.string)
             )
         )
+
+
+type alias ReqParams a =
+    { method : String
+    , headers : List Http.Header
+    , url : String
+    , body : Http.Body
+    , expect : Http.Expect a
+    , timeout : Maybe Time.Time
+    , withCredentials : Bool
+    }
+
+
+defaultReqParams : ReqParams String
+defaultReqParams =
+    { method = "GET"
+    , headers = []
+    , url = ""
+    , body = Http.emptyBody
+    , expect = Http.expectString
+    , timeout = Just (Time.minute * 30)
+    , withCredentials = False
+    }
+
+
+authReq :
+    Maybe String
+    -> ReqParams a
+    -> Decode.Decoder b
+    -> Http.Request b
+authReq token ({ headers } as reqParams) decoder =
+    let
+        params =
+            { reqParams | expect = Http.expectJson decoder }
+    in
+        case token of
+            Nothing ->
+                Http.request params
+
+            Just jwt ->
+                Http.request { params | headers = (List.append headers [ (Http.header "x-jwt" jwt) ]) }

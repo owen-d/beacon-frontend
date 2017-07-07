@@ -8683,6 +8683,42 @@ var _elm_lang$http$Http$StringPart = F2(
 	});
 var _elm_lang$http$Http$stringPart = _elm_lang$http$Http$StringPart;
 
+var _user$project$Main$authReq = F3(
+	function (token, _p0, decoder) {
+		var _p1 = _p0;
+		var params = _elm_lang$core$Native_Utils.update(
+			_p1,
+			{
+				expect: _elm_lang$http$Http$expectJson(decoder)
+			});
+		var _p2 = token;
+		if (_p2.ctor === 'Nothing') {
+			return _elm_lang$http$Http$request(params);
+		} else {
+			return _elm_lang$http$Http$request(
+				_elm_lang$core$Native_Utils.update(
+					params,
+					{
+						headers: A2(
+							_elm_lang$core$List$append,
+							_p1.headers,
+							{
+								ctor: '::',
+								_0: A2(_elm_lang$http$Http$header, 'x-jwt', _p2._0),
+								_1: {ctor: '[]'}
+							})
+					}));
+		}
+	});
+var _user$project$Main$defaultReqParams = {
+	method: 'GET',
+	headers: {ctor: '[]'},
+	url: '',
+	body: _elm_lang$http$Http$emptyBody,
+	expect: _elm_lang$http$Http$expectString,
+	timeout: _elm_lang$core$Maybe$Just(_elm_lang$core$Time$minute * 30),
+	withCredentials: false
+};
 var _user$project$Main$viewBeacon = function (bkn) {
 	return A2(
 		_elm_lang$html$Html$div,
@@ -8735,6 +8771,10 @@ var _user$project$Main$decodeBeacons = A2(
 			A2(_elm_lang$core$Json_Decode$field, 'name', _elm_lang$core$Json_Decode$string),
 			A2(_elm_lang$core$Json_Decode$field, 'userId', _elm_lang$core$Json_Decode$string),
 			A2(_elm_lang$core$Json_Decode$field, 'deployName', _elm_lang$core$Json_Decode$string))));
+var _user$project$Main$ReqParams = F7(
+	function (a, b, c, d, e, f, g) {
+		return {method: a, headers: b, url: c, body: d, expect: e, timeout: f, withCredentials: g};
+	});
 var _user$project$Main$NewBeacons = function (a) {
 	return {ctor: 'NewBeacons', _0: a};
 };
@@ -8743,25 +8783,31 @@ var _user$project$Main$fetchBeacons = function (jwt) {
 	return A2(
 		_elm_lang$http$Http$send,
 		_user$project$Main$NewBeacons,
-		A2(_elm_lang$http$Http$get, url, _user$project$Main$decodeBeacons));
+		A3(
+			_user$project$Main$authReq,
+			_elm_lang$core$Maybe$Just(jwt),
+			_elm_lang$core$Native_Utils.update(
+				_user$project$Main$defaultReqParams,
+				{url: url}),
+			_user$project$Main$decodeBeacons));
 };
 var _user$project$Main$update = F2(
 	function (msg, model) {
-		var _p0 = msg;
-		if (_p0.ctor === 'FetchBeacons') {
+		var _p3 = msg;
+		if (_p3.ctor === 'FetchBeacons') {
 			return {
 				ctor: '_Tuple2',
 				_0: model,
 				_1: _user$project$Main$fetchBeacons(model.jwt)
 			};
 		} else {
-			var _p1 = _p0._0;
-			if (_p1.ctor === 'Ok') {
+			var _p4 = _p3._0;
+			if (_p4.ctor === 'Ok') {
 				return {
 					ctor: '_Tuple2',
 					_0: _elm_lang$core$Native_Utils.update(
 						model,
-						{beacons: _p1._0}),
+						{beacons: _p4._0}),
 					_1: _elm_lang$core$Platform_Cmd$none
 				};
 			} else {
