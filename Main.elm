@@ -25,6 +25,7 @@ type alias Model =
     { user : Maybe User
     , beacons : Beacons
     , jwt : String
+    , error : Maybe Http.Error
     }
 
 
@@ -47,7 +48,7 @@ type alias Beacons =
 
 init : ( Model, Cmd Msg )
 init =
-    ( Model Nothing [] "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1MTQzOTYzOTksImlhdCI6MTQ5ODg0NDM5OSwidXNlcl9pZCI6IjZiYTdiODEwLTlkYWQtMTFkMS04MGI0LTAwYzA0ZmQ0MzBjOCJ9._Mn0COXwcs9l4NqqAbbosXWCTMentdy4xj9ZqgKhEF0", Cmd.none )
+    ( Model Nothing [] "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1MTQzOTYzOTksImlhdCI6MTQ5ODg0NDM5OSwidXNlcl9pZCI6IjZiYTdiODEwLTlkYWQtMTFkMS04MGI0LTAwYzA0ZmQ0MzBjOCJ9._Mn0COXwcs9l4NqqAbbosXWCTMentdy4xj9ZqgKhEF0" Nothing, Cmd.none )
 
 
 
@@ -71,7 +72,7 @@ update msg model =
                     ( { model | beacons = bkns }, Cmd.none )
 
                 Err e ->
-                    ( model, Cmd.none )
+                    ( { model | error = Just e }, Cmd.none )
 
 
 
@@ -91,8 +92,19 @@ view : Model -> Html.Html Msg
 view model =
     Html.div []
         [ Html.button [ Html.Events.onClick FetchBeacons ] [ Html.text "fetch beacons" ]
+        , viewError model.error
         , Html.div [] (List.map viewBeacon (List.reverse model.beacons))
         ]
+
+
+viewError : Maybe Http.Error -> Html.Html msg
+viewError err =
+    case err of
+        Nothing ->
+            Html.div [] [ Html.text "no errror!" ]
+
+        Just e ->
+            Html.div [] [ Html.text ("Error" ++ (toString e)) ]
 
 
 viewBeacon : Beacon -> Html.Html msg
@@ -132,8 +144,8 @@ decodeBeacons =
         (Decode.list
             (Decode.map3 Beacon
                 (Decode.field "name" Decode.string)
-                (Decode.field "userId" Decode.string)
-                (Decode.field "deployName" Decode.string)
+                (Decode.field "user_id" Decode.string)
+                (Decode.field "deploy_name" Decode.string)
             )
         )
 
