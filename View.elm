@@ -6,13 +6,19 @@ import Types exposing (..)
 import Http
 import Html.Events
 import Html
+import Lib.Layout.View as LayoutView
 
 
 -- view
 
-
 view : Model -> Html.Html Msg
 view model =
+    LayoutView.view
+        mainView
+        model
+
+mainView : Model -> Html.Html Msg
+mainView model =
     Html.div []
         [ Html.button [ Html.Events.onClick FetchBeacons ] [ Html.text "fetch beacons" ]
         , viewError model.error

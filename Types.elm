@@ -1,7 +1,9 @@
 module Types exposing (..)
 
 -- imports
+
 import Http
+import Material
 
 
 type alias Model =
@@ -9,6 +11,7 @@ type alias Model =
     , beacons : Beacons
     , jwt : String
     , error : Maybe Http.Error
+    , mdl : Material.Model
     }
 
 
@@ -29,10 +32,11 @@ type alias Beacons =
     List Beacon
 
 
+
 -- state updates
+
+
 
 type Msg
     = FetchBeacons
     | NewBeacons (Result Http.Error Beacons)
-
-
