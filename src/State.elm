@@ -5,6 +5,7 @@ module State exposing (..)
 import Types exposing (..)
 import Utils exposing (..)
 import Material
+import Lib.Layout.State as LayoutState
 
 
 -- state initialization
@@ -45,6 +46,9 @@ update msg model =
 
                 Err e ->
                     ( { model | error = Just e }, Cmd.none )
+
+        LayoutMsg msg ->
+            LayoutState.updateLayout msg model
 
 
 

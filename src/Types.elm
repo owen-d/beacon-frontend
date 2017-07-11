@@ -5,6 +5,9 @@ module Types exposing (..)
 import Http
 import Material
 
+-- layout
+import Lib.Layout.Types exposing (LayoutMsg)
+
 
 type alias Model =
     { user : Maybe User
@@ -45,3 +48,5 @@ type Msg
     | NewBeacons (Result Http.Error Beacons)
       -- material design types
     | Mdl (Material.Msg Msg)
+      -- layout types
+    | LayoutMsg LayoutMsg

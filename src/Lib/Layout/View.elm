@@ -1,6 +1,7 @@
 module Lib.Layout.View exposing (..)
 
-import Types exposing (Model, Msg(Mdl))
+import Lib.Layout.Types exposing (LayoutMsg(SelectTab))
+import Types exposing (Model, Msg(Mdl, LayoutMsg))
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Material.Layout as Layout
@@ -16,6 +17,7 @@ view viewFn model =
         Layout.render Mdl
             model.mdl
             [ Layout.fixedHeader
+            , Layout.onSelectTab (cast SelectTab)
             ]
             { header = [ h1 [ style [ ( "padding", "2rem" ) ] ] [ text "beaconthing" ] ]
             , drawer = []
@@ -26,3 +28,9 @@ view viewFn model =
                     |> Options.div [ Color.background Color.primaryDark ]
                 ]
             }
+
+
+cast : (a -> LayoutMsg) -> a -> Msg
+cast producer msg =
+    producer msg
+        |> LayoutMsg
