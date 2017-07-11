@@ -47,7 +47,9 @@ type alias Mdl =
 
 
 type Msg
-    = FetchBeacons
+    -- None type is defined but doesnt cause any updates. It lets us piggyback on type assertions that require `Html Msg`
+    = None
+    | FetchBeacons
     | NewBeacons (Result Http.Error Beacons)
       -- material design types
     | Mdl (Material.Msg Msg)
