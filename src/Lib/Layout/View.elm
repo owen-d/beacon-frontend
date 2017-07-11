@@ -17,7 +17,7 @@ view viewFn model =
         Layout.render Mdl
             model.mdl
             [ Layout.fixedHeader
-            , Layout.onSelectTab (cast SelectTab)
+            , Layout.onSelectTab (\x -> SelectTab x |> LayoutMsg)
             ]
             { header = [ h1 [ style [ ( "padding", "2rem" ) ] ] [ text "beaconthing" ] ]
             , drawer = []
@@ -28,9 +28,3 @@ view viewFn model =
                     |> Options.div [ Color.background Color.primaryDark ]
                 ]
             }
-
-
-cast : (a -> LayoutMsg) -> a -> Msg
-cast producer msg =
-    producer msg
-        |> LayoutMsg

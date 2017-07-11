@@ -1,6 +1,7 @@
 module Utils exposing (..)
 
 -- imports
+
 import Http
 import Types exposing (..)
 import Time
@@ -77,3 +78,8 @@ authReq token ({ headers } as reqParams) decoder =
             Just jwt ->
                 Http.request { params | headers = (List.append headers [ (Http.header "x-jwt" jwt) ]) }
 
+
+inject : (a -> b) -> (b -> c) -> a -> c
+inject subTypeCtor superTypeCtor msg =
+    subTypeCtor msg
+        |> superTypeCtor
