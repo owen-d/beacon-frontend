@@ -7,9 +7,12 @@ import Http
 import Html.Events
 import Html
 import Lib.Layout.View as LayoutView
+import Material.Options as Options
+import Material.Color as Color
 
 
 -- view
+
 
 view : Model -> Html.Html Msg
 view model =
@@ -17,9 +20,10 @@ view model =
         mainView
         model
 
+
 mainView : Model -> Html.Html Msg
 mainView model =
-    Html.div []
+    Options.div [ Color.background Color.primaryDark ]
         [ Html.button [ Html.Events.onClick FetchBeacons ] [ Html.text "fetch beacons" ]
         , viewError model.error
         , Html.div [] (List.map viewBeacon (List.reverse model.beacons))
