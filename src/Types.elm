@@ -5,8 +5,10 @@ module Types exposing (..)
 import Http
 import Material
 
+
 -- layout
-import Modules.Layout.Types exposing (LayoutMsg)
+
+import Modules.Layout.Types exposing (LayoutMsg, LayoutModel)
 
 
 type alias Model =
@@ -15,6 +17,7 @@ type alias Model =
     , jwt : String
     , error : Maybe Http.Error
     , mdl : Material.Model
+    , layout : LayoutModel
     }
 
 

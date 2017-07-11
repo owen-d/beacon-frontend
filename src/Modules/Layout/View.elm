@@ -17,6 +17,7 @@ view viewFn model =
         Layout.render Mdl
             model.mdl
             [ Layout.fixedHeader
+            , Layout.selectedTab model.layout.selectedTab
             , Layout.onSelectTab (\x -> SelectTab x |> LayoutMsg)
             ]
             { header = [ h1 [ style [ ( "padding", "2rem" ) ] ] [ text "beaconthing" ] ]
