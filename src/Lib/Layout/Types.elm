@@ -4,7 +4,7 @@ import Material
 
 
 type Msg
-    = Maybe Mdl (Material.Msg Msg)
+    = Mdl (Material.Msg Msg)
 
 
 type alias Mdl =

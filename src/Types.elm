@@ -4,6 +4,7 @@ module Types exposing (..)
 
 import Http
 import Material
+import Material
 
 
 type alias Model =
@@ -40,3 +41,4 @@ type alias Beacons =
 type Msg
     = FetchBeacons
     | NewBeacons (Result Http.Error Beacons)
+    | Mdl (Material.Msg Msg)

@@ -5,8 +5,7 @@ import Types exposing (..)
 import State exposing (..)
 import View exposing (..)
 
-
--- each dir should have: utils (async, helpers), State (update fns, etc), view (rendering logic), Types (models, etc)
+-- each dir should have: utils (async, helpers), State (update fns, etc), View (rendering logic), Types (models, etc)
 
 
 main : Program Never Model Msg

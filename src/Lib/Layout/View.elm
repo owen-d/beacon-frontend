@@ -1,15 +1,16 @@
 module Lib.Layout.View exposing (..)
 
-import Lib.Layout.Types exposing (..)
+import Types exposing (Model)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Material.Layout as Layout
+import Material
 
 
-{- view will wrap a model & view fn where the model has signature {a | mdl: Material.Model} -}
-view : ({ a | mdl : Mdl } -> Html msg) -> a -> Html msg
+view : (Model -> Html msg) -> Model -> Html msg
 view viewFn model =
-    Layout.render Mdl
+    -- Cannot find variable `Mdl`
+    Layout.render Material.Model
         model.mdl
         [ Layout.fixedHeader
         ]
