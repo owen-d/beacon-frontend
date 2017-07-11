@@ -6,7 +6,7 @@ import Types exposing (..)
 import Http
 import Html.Events
 import Html
-import Lib.Layout.View as LayoutView
+import Modules.Layout.View as LayoutView
 
 
 -- view

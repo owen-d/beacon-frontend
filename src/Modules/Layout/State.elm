@@ -1,7 +1,7 @@
-module Lib.Layout.State exposing (..)
+module Modules.Layout.State exposing (..)
 
 import Types exposing (Model, Msg(LayoutMsg))
-import Lib.Layout.Types exposing (..)
+import Modules.Layout.Types exposing (..)
 
 
 updateLayout : LayoutMsg -> Model -> (Model, Cmd Msg)

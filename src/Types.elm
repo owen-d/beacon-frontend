@@ -6,7 +6,7 @@ import Http
 import Material
 
 -- layout
-import Lib.Layout.Types exposing (LayoutMsg)
+import Modules.Layout.Types exposing (LayoutMsg)
 
 
 type alias Model =

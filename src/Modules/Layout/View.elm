@@ -1,6 +1,6 @@
-module Lib.Layout.View exposing (..)
+module Modules.Layout.View exposing (..)
 
-import Lib.Layout.Types exposing (LayoutMsg(SelectTab))
+import Modules.Layout.Types exposing (LayoutMsg(SelectTab))
 import Types exposing (Model, Msg(Mdl, LayoutMsg))
 import Html exposing (..)
 import Html.Attributes exposing (..)
@@ -21,7 +21,7 @@ view viewFn model =
             ]
             { header = [ h1 [ style [ ( "padding", "2rem" ) ] ] [ text "beaconthing" ] ]
             , drawer = []
-            , tabs = ( [ text "first", text "second" ], [] )
+            , tabs = ( [ text "Deployments", text "Messages", text "Beacons" ], [] )
             , main =
                 -- wrap with div setting background color
                 [ [ viewFn model ]

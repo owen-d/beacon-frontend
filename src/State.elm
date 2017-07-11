@@ -5,7 +5,7 @@ module State exposing (..)
 import Types exposing (..)
 import Utils exposing (..)
 import Material
-import Lib.Layout.State as LayoutState
+import Modules.Layout.State as LayoutState
 
 
 -- state initialization
