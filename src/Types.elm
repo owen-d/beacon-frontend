@@ -2,20 +2,19 @@ module Types exposing (..)
 
 -- imports
 
-import Http
 import Material
 
 
 -- layout
 
 import Modules.Layout.Types exposing (LayoutMsg, LayoutModel)
+import Modules.Beacons.Types exposing (BeaconsMsg, BeaconsModel)
 
 
 type alias Model =
     { user : Maybe User
-    , beacons : Beacons
+    , beacons : BeaconsModel
     , jwt : String
-    , error : Maybe Http.Error
     , mdl : Material.Model
     , layout : LayoutModel
     }
@@ -26,16 +25,6 @@ type alias User =
     , email : String
     }
 
-
-type alias Beacon =
-    { name : String
-    , userId : String
-    , deployName : String
-    }
-
-
-type alias Beacons =
-    List Beacon
 
 
 type alias Mdl =
@@ -49,9 +38,8 @@ type alias Mdl =
 type Msg
     -- None type is defined but doesnt cause any updates. It lets us piggyback on type assertions that require `Html Msg`
     = None
-    | FetchBeacons
-    | NewBeacons (Result Http.Error Beacons)
       -- material design types
     | Mdl (Material.Msg Msg)
       -- layout types
     | LayoutMsg LayoutMsg
+    | BeaconsMsg BeaconsMsg

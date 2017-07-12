@@ -1,23 +1,23 @@
 module Modules.Beacons.View exposing (..)
 
+import Modules.Beacons.Types exposing (..)
 import Material.Table as Table
 import Material.Options as Options
 import Html exposing (..)
-import Types exposing (..)
+import Types exposing (Msg)
 
-
-viewBeaconTable : Beacons -> Html Msg
-viewBeaconTable bkns =
+viewBeaconTable : BeaconsModel -> Html Msg
+viewBeaconTable model =
     Table.table []
         [ Table.thead []
             [ Table.tr []
-                [ Table.th [] [ text "Id" ]
+                [ Table.th [ Table.ascending ] [ text "Id" ]
                 , Table.th [] [ text "Current Deployment" ]
                 , Table.th [] [ text "Enabled" ]
                 ]
             ]
         , Table.tbody []
-            (bkns
+            (model.beacons
                 |> List.map
                     (\bkn ->
                         Table.tr []
