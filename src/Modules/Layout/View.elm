@@ -49,8 +49,8 @@ viewFooter =
         , right =
             Footer.right []
                 [ Footer.logo [] [ Footer.html <| text "Mini Footer Right Section" ]
-                , Footer.socialButton [ Options.css "margin-right" "6px" ] []
-                , Footer.socialButton [ Options.css "margin-right" "6px" ] []
-                , Footer.socialButton [ Options.css "margin-right" "0px" ] []
+                , Footer.socialButton [ Options.css "margin-right" "0.5em" ] []
+                , Footer.socialButton [ Options.css "margin-right" "0.5em" ] []
+                , Footer.socialButton [ Options.css "margin-right" "0em" ] []
                 ]
         }

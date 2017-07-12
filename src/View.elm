@@ -5,8 +5,9 @@ module View exposing (..)
 import Types exposing (..)
 import Http
 import Html.Events
-import Html
+import Html exposing (Html, text)
 import Modules.Layout.View as LayoutView
+import Modules.Beacons.View as BeaconsView
 
 
 -- view
@@ -24,7 +25,7 @@ mainView model =
     Html.div []
         [ Html.button [ Html.Events.onClick FetchBeacons ] [ Html.text "fetch beacons" ]
         , viewError model.error
-        , Html.div [] (List.map viewBeacon (List.reverse model.beacons))
+        , BeaconsView.viewBeaconTable model.beacons
         ]
 
 
