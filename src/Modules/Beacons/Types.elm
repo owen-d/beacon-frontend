@@ -7,10 +7,17 @@ import Material.Table as Table
 
 type alias BeaconsModel =
     { order : Maybe Table.Order
+    , orderField : OrderField
     , selected : Set String
     , beacons : Beacons
     , beaconsErr : Maybe Http.Error
     }
+
+
+type OrderField
+    = BName
+    | BEnabled
+    | BDeployment
 
 
 type alias Beacon =
@@ -26,7 +33,8 @@ type alias Beacons =
 
 model : BeaconsModel
 model =
-    { order = Just Table.Descending
+    { order = Just Table.Ascending
+    , orderField = BName
     , selected = Set.empty
     , beacons = []
     , beaconsErr = Nothing
@@ -36,6 +44,6 @@ model =
 type BeaconsMsg
     = Toggle String
     | ToggleAll
-    | Reorder
+    | Reorder OrderField
     | NewBeacons (Result Http.Error Beacons)
     | FetchBeacons
