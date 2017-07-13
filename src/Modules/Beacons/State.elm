@@ -105,4 +105,12 @@ toggle x set =
 
 allSelected : BeaconsModel -> Bool
 allSelected model =
-    Set.size model.selected == List.length model.beacons
+    let ln =
+            List.length model.beacons
+    in
+        (Set.size model.selected == ln) && ((/=) ln 0)
+
+
+key : Beacon -> String
+key =
+    .name

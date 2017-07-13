@@ -1,17 +1,16 @@
 module Modules.Beacons.View exposing (..)
 
 import Modules.Beacons.Types exposing (..)
+import Modules.Beacons.State exposing (..)
 import Material.Table as Table
-import Material.Options as Options exposing (nop)
+import Material.Options as Options exposing (nop, when)
 import Material.Button as Button
-
-
--- import Material.Toggles as Toggles
-
+import Material.Toggles as Toggles
 import Html exposing (..)
 import Html.Attributes exposing (style)
 import Types exposing (Msg(Mdl, BeaconsMsg), Model)
 import Components.Prefixes exposing (prefixes)
+import Set exposing (Set)
 
 
 viewBeaconTable : List Int -> Model -> Html Msg
@@ -47,17 +46,39 @@ viewBeaconTable prefix model =
         Table.table []
             [ Table.thead []
                 [ Table.tr []
-                    [ sortingHeader bModel BName
+                    [ Table.th []
+                        [ Toggles.checkbox
+                            {- append -1 to index for MDL. table data will use indexedMap,
+                               therefore taking the spots 0->
+                            -}
+                            Mdl
+                            (List.append prefix [ -1 ])
+                            model.mdl
+                            [ Options.onToggle (ToggleAll |> BeaconsMsg)
+                            , Toggles.value (allSelected model.beacons)
+                            ]
+                            []
+                        ]
+                    , sortingHeader bModel BName
                     , sortingHeader bModel BDeployment
                     , sortingHeader bModel BEnabled
                     ]
                 ]
             , Table.tbody []
                 (sorter bModel.beacons
-                    |> List.map
-                        (\bkn ->
-                            Table.tr []
-                                [ Table.td [] [ text bkn.name ]
+                    |> List.indexedMap
+                        (\idx bkn ->
+                            Table.tr [ Table.selected |> when (Set.member (key bkn) bModel.selected) ]
+                                [ Table.td []
+                                    [ Toggles.checkbox Mdl
+                                        (List.append prefix [ idx ])
+                                        model.mdl
+                                        [ Options.onToggle (Toggle (key bkn) |> BeaconsMsg)
+                                        , Toggles.value <| Set.member (key bkn) bModel.selected
+                                        ]
+                                        []
+                                    ]
+                                , Table.td [] [ text bkn.name ]
                                 , Table.td [] [ text bkn.deployName ]
                                 , Table.td [] [ text "true" ]
                                 ]
