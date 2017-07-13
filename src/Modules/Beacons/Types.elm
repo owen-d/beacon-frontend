@@ -26,7 +26,7 @@ type alias Beacons =
 
 model : BeaconsModel
 model =
-    { order = Just Table.Ascending
+    { order = Just Table.Descending
     , selected = Set.empty
     , beacons = []
     , beaconsErr = Nothing

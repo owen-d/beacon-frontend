@@ -29,7 +29,7 @@ view viewFn model =
                 [ [ viewFn model
                   , viewFooter
                   ]
-                    |> Options.div [ Color.background Color.primaryDark ]
+                    |> Options.div []
                 ]
             }
 
