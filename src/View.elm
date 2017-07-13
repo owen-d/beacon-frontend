@@ -22,7 +22,7 @@ view model =
 mainView : Model -> Html.Html Msg
 mainView model =
     Html.div []
-        [ BeaconsView.viewBeaconTable model.beacons ]
+        [ BeaconsView.view model]
 
 
 viewError : Maybe Http.Error -> Html.Html msg
