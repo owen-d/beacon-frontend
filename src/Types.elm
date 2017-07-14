@@ -3,10 +3,10 @@ module Types exposing (..)
 -- imports
 
 import Material
-import Navigation exposing (Location)
-import Modules.Layout.Types exposing (LayoutMsg, LayoutModel)
 import Modules.Beacons.Types as BeaconTypes exposing (BeaconsMsg, BeaconsModel)
+import Modules.Layout.Types exposing (LayoutMsg)
 import Modules.Route.Types exposing (Route(BeaconsRoute))
+import Navigation exposing (Location)
 
 
 type alias Model =
@@ -14,7 +14,6 @@ type alias Model =
     , beacons : BeaconsModel
     , jwt : String
     , mdl : Material.Model
-    , layout : LayoutModel
     , route : Route
     }
 
@@ -25,7 +24,6 @@ model =
     , beacons = BeaconTypes.model
     , jwt = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1MTQzOTYzOTksImlhdCI6MTQ5ODg0NDM5OSwidXNlcl9pZCI6IjZiYTdiODEwLTlkYWQtMTFkMS04MGI0LTAwYzA0ZmQ0MzBjOCJ9._Mn0COXwcs9l4NqqAbbosXWCTMentdy4xj9ZqgKhEF0"
     , mdl = Material.model
-    , layout = { selectedTab = 0 }
     , route = BeaconsRoute
     }
 

@@ -2,12 +2,11 @@ module State exposing (..)
 
 -- imports
 
-import Types exposing (..)
 import Material
-import Modules.Layout.State as LayoutState
-import Modules.Beacons.Types as BeaconTypes
 import Modules.Beacons.State as BeaconState
+import Modules.Layout.State as LayoutState
 import Modules.Route.Routing exposing (parseLocation)
+import Types exposing (..)
 
 
 -- update

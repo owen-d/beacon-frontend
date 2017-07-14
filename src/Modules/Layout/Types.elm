@@ -1,9 +1,12 @@
 module Modules.Layout.Types exposing (..)
 
+import Modules.Route.Types exposing (Route)
+
 
 type LayoutMsg
-    = SelectTab Int
+    = SelectTab Route
 
 
-type alias LayoutModel =
-    { selectedTab : Int }
+
+type alias TabWrapper =
+    ( String, Route )

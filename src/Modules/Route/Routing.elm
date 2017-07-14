@@ -1,7 +1,7 @@
 module Modules.Route.Routing exposing (..)
 
-import Navigation exposing (Location)
 import Modules.Route.Types exposing (..)
+import Navigation exposing (Location)
 import UrlParser exposing (..)
 
 
@@ -23,3 +23,4 @@ parseLocation location =
 
         Nothing ->
             NotFoundRoute
+

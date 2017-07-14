@@ -1,29 +1,37 @@
 module Modules.Layout.View exposing (..)
 
-import Modules.Layout.Types exposing (LayoutMsg(SelectTab))
-import Types exposing (Model, Msg(Mdl, LayoutMsg, None))
+import Array
 import Html exposing (..)
 import Html.Attributes exposing (..)
-import Material.Layout as Layout
-import Material.Scheme
 import Material.Color as Color
-import Material.Options as Options
 import Material.Footer as Footer
+import Material.Layout as Layout
+import Material.Options as Options
+import Material.Scheme
+import Modules.Layout.Types exposing (LayoutMsg(SelectTab), TabWrapper)
+import Modules.Route.Types exposing (Route(BeaconsRoute))
+import Types exposing (Model, Msg(Mdl, LayoutMsg, None))
 
 
-view : (Model -> Html Msg) -> Model -> Html Msg
-view viewFn model =
+tabPath : String -> String
+tabPath str =
+    String.toLower str
+        |> (++) "#"
+
+
+view : (Model -> Html Msg) -> List TabWrapper -> Model -> Html Msg
+view viewFn tabs model =
     -- Cannot find variable `Mdl`
     Material.Scheme.topWithScheme Color.BlueGrey Color.Pink <|
         Layout.render Mdl
             model.mdl
             [ Layout.fixedHeader
-            , Layout.selectedTab model.layout.selectedTab
-            , Layout.onSelectTab (\x -> SelectTab x |> LayoutMsg)
+            , Layout.selectedTab <| selectedTab model.route tabs
+            , Layout.onSelectTab <| selectTab tabs
             ]
             { header = [ h1 [ style [ ( "padding", "2rem" ) ] ] [ text "beaconthing" ] ]
             , drawer = []
-            , tabs = ( [ text "Beacons", text "Deployments", text "Messages" ], [] )
+            , tabs = ( List.map (\( name, _ ) -> text name) tabs, [] )
             , main =
                 -- wrap with div setting background color
                 [ [ viewFn model
@@ -54,3 +62,38 @@ viewFooter =
                 , Footer.socialButton [ Options.css "margin-right" "0em" ] []
                 ]
         }
+
+
+
+{- find which route is at a tab index -}
+
+
+selectTab : List TabWrapper -> Int -> Msg
+selectTab tabs idx =
+    Array.fromList tabs
+        |> Array.get idx
+        |> Maybe.map (\( _, route ) -> route)
+        |> Maybe.withDefault BeaconsRoute
+        |> SelectTab
+        |> LayoutMsg
+
+
+
+{- find the idx for a given route -}
+
+
+selectedTab : Route -> List TabWrapper -> Int
+selectedTab route tabs =
+    -- find index of the route which is selected
+    List.indexedMap
+        (\idx ( _, route ) ->
+            if route == route then
+                idx
+            else
+                -- toss anything not matching desired route
+                -1
+        )
+        tabs
+        |> List.filter (\a -> (>=) a 0)
+        |> List.head
+        |> Maybe.withDefault 0
