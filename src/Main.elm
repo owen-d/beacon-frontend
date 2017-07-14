@@ -1,17 +1,22 @@
 module Main exposing (..)
 
-import Html
 import Types exposing (..)
 import State exposing (..)
 import View exposing (..)
+import Navigation exposing (Location)
+import Modules.Route.Routing exposing (parseLocation)
 
 -- each dir should have: utils (async, helpers), State (update fns, etc), View (rendering logic), Types (models, etc)
+init : Location -> (Model, Cmd Msg)
+init route =
+    ({ model | route = parseLocation route }, Cmd.none)
+
 
 
 main : Program Never Model Msg
 main =
-    Html.program
-        { init = State.init
+    Navigation.program LocationChange
+        { init = init
         , update = State.update
         , subscriptions = State.subscriptions
         , view = View.view

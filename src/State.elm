@@ -7,25 +7,7 @@ import Material
 import Modules.Layout.State as LayoutState
 import Modules.Beacons.Types as BeaconTypes
 import Modules.Beacons.State as BeaconState
-
-
--- state initialization
-
-
-initModel : Model
-initModel =
-    { user = Nothing
-    , beacons = BeaconTypes.model
-    , jwt = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1MTQzOTYzOTksImlhdCI6MTQ5ODg0NDM5OSwidXNlcl9pZCI6IjZiYTdiODEwLTlkYWQtMTFkMS04MGI0LTAwYzA0ZmQ0MzBjOCJ9._Mn0COXwcs9l4NqqAbbosXWCTMentdy4xj9ZqgKhEF0"
-    , mdl = Material.model
-    , layout = { selectedTab = 0 }
-    }
-
-
-init : ( Model, Cmd Msg )
-init =
-    ( initModel, Cmd.none )
-
+import Modules.Route.Routing exposing (parseLocation)
 
 
 -- update
@@ -39,6 +21,13 @@ update msg model =
 
         Mdl msg_ ->
             Material.update Mdl msg_ model
+
+        LocationChange location ->
+            let
+                newRoute =
+                    parseLocation location
+            in
+                ( { model | route = newRoute }, Cmd.none )
 
         LayoutMsg msg ->
             LayoutState.updateLayout msg model
