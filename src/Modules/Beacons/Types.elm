@@ -3,6 +3,7 @@ module Modules.Beacons.Types exposing (..)
 import Http
 import Set exposing (Set)
 import Material.Table as Table
+import Material
 
 
 type alias BeaconsModel =
@@ -11,6 +12,7 @@ type alias BeaconsModel =
     , selected : Set String
     , beacons : Beacons
     , beaconsErr : Maybe Http.Error
+    , mdl : Material.Model
     }
 
 
@@ -38,6 +40,7 @@ model =
     , selected = Set.empty
     , beacons = []
     , beaconsErr = Nothing
+    , mdl = Material.model
     }
 
 
@@ -47,3 +50,4 @@ type BeaconsMsg
     | Reorder OrderField
     | NewBeacons (Result Http.Error Beacons)
     | FetchBeacons
+    | Mdl (Material.Msg BeaconsMsg)

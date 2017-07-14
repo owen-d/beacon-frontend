@@ -8,8 +8,7 @@ import Material.Button as Button
 import Material.Toggles as Toggles
 import Html exposing (..)
 import Html.Attributes exposing (style)
-import Types exposing (Msg(Mdl, BeaconsMsg), Model)
-import Components.Prefixes exposing (prefixes)
+import Types exposing (Msg(BeaconsMsg), Model)
 import Set exposing (Set)
 
 
@@ -51,7 +50,7 @@ viewBeaconTable prefix model =
                             {- append -1 to index for MDL. table data will use indexedMap,
                                therefore taking the spots 0->
                             -}
-                            Mdl
+                            (\a -> Mdl a |> BeaconsMsg)
                             (List.append prefix [ -1 ])
                             model.mdl
                             [ Options.onToggle (ToggleAll |> BeaconsMsg)
@@ -70,7 +69,7 @@ viewBeaconTable prefix model =
                         (\idx bkn ->
                             Table.tr [ Table.selected |> when (Set.member (key bkn) bModel.selected) ]
                                 [ Table.td []
-                                    [ Toggles.checkbox Mdl
+                                    [ Toggles.checkbox (\a -> Mdl a |> BeaconsMsg)
                                         (List.append prefix [ idx ])
                                         model.mdl
                                         [ Options.onToggle (Toggle (key bkn) |> BeaconsMsg)
@@ -124,10 +123,10 @@ view : Model -> Html Msg
 view model =
     let
         prefix =
-            prefixes.beaconsView
+            [ 0 ]
     in
         [ viewBeaconTable (List.append prefix [ 0 ]) model
-        , Button.render Mdl
+        , Button.render (\a -> Mdl a |> BeaconsMsg)
             (List.append prefix [ 1 ])
             model.mdl
             [ Button.raised

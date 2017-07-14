@@ -27,11 +27,6 @@ type alias User =
 
 
 
-type alias Mdl =
-    Material.Model
-
-
-
 -- state updates
 
 

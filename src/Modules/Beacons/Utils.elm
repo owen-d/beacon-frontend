@@ -1,6 +1,5 @@
 module Modules.Beacons.Utils exposing (..)
 
-import Types exposing (Msg)
 import Modules.Beacons.Types exposing (..)
 import Utils exposing (..)
 import Http

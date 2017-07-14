@@ -1,11 +1,13 @@
 module Modules.Beacons.State exposing (..)
 
-import Types exposing (Model, Msg(..))
-import Modules.Beacons.Types exposing (..)
+import Types exposing (Model, Msg(BeaconsMsg))
+import Modules.Beacons.Types as BeaconTypes exposing (..)
 import Modules.Beacons.Utils exposing (..)
 import Material.Table as Table
+import Material
 import Set exposing (Set)
 import Http
+import Utils exposing (lift)
 
 
 update : BeaconsMsg -> Model -> ( Model, Cmd Msg )
@@ -13,6 +15,9 @@ update msg model =
     let
         ( bModel, cmd ) =
             case msg of
+                Mdl msg_ ->
+                    lift BeaconsMsg (Material.update Mdl msg_ model.beacons)
+
                 -- Click on master checkbox
                 ToggleAll ->
                     toggleAll model.beacons
@@ -35,6 +40,10 @@ update msg model =
                     )
     in
         ( { model | beacons = bModel }, cmd )
+
+
+
+
 
 
 toggleAll : BeaconsModel -> ( BeaconsModel, Cmd Msg )
@@ -105,7 +114,8 @@ toggle x set =
 
 allSelected : BeaconsModel -> Bool
 allSelected model =
-    let ln =
+    let
+        ln =
             List.length model.beacons
     in
         (Set.size model.selected == ln) && ((/=) ln 0)

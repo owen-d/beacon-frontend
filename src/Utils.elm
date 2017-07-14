@@ -3,7 +3,6 @@ module Utils exposing (..)
 -- imports
 
 import Http
-import Types exposing (..)
 import Time
 import Json.Decode as Decode
 
@@ -49,7 +48,10 @@ authReq token ({ headers } as reqParams) decoder =
                 Http.request { params | headers = (List.append headers [ (Http.header "x-jwt" jwt) ]) }
 
 
-inject : (a -> b) -> (b -> c) -> a -> c
-inject subTypeCtor superTypeCtor msg =
-    subTypeCtor msg
-        |> superTypeCtor
+
+{- lift will map a val like (model, cmd a) -> (model, cmd b) -}
+
+
+lift : (a -> b) -> ( m, Cmd a ) -> ( m, Cmd b )
+lift mapper ( model, cmd ) =
+    ( model, Cmd.map mapper cmd )
