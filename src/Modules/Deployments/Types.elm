@@ -38,7 +38,7 @@ model =
     { order = Just Table.Ascending
     , orderField = DName
     , selected = Set.empty
-    , deployments = testDeployments
+    , deployments = []
     , deploymentsErr = Nothing
     , mdl = Material.model
     }
@@ -51,8 +51,3 @@ type Msg
     | NewDeployments (Result Http.Error Deployments)
     | FetchDeployments
     | Mdl (Material.Msg Msg)
-
-
-testDeployments : Deployments
-testDeployments =
-    [ { userId = "a", name = "dep1", messageName = "msg1", beacons = [] }, { userId = "a", name = "dep2", messageName = "msg2", beacons = [] } ]

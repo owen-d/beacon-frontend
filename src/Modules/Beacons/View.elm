@@ -125,17 +125,8 @@ view model =
         prefix =
             [ 0 ]
     in
-        [ viewBeaconTable (List.append prefix [ 0 ]) model
-        , Button.render (\a -> Mdl a |> BeaconsMsg)
-            (List.append prefix [ 1 ])
-            model.beacons.mdl
-            [ Button.raised
-            , Button.ripple
-            , Options.onClick (FetchBeacons |> BeaconsMsg)
-            , Options.css "float" "right"
-            ]
-            [ text "fetch beacons" ]
-        ]
+        viewBeaconTable (List.append prefix [ 0 ]) model
+            :: beaconButtons (List.append prefix [ 1 ]) model
             |> div
                 [ style
                     [ ( "text-align", "center" )
@@ -144,6 +135,31 @@ view model =
                     ]
                 ]
             |> (\x -> Options.div [ Options.center ] [ x ])
+
+
+beaconButtons : List Int -> Model -> List (Html Msg)
+beaconButtons prefix ({ beacons } as model) =
+    -- fetch more beacons
+    [ Button.render (BeaconsMsg << Mdl)
+        (List.append prefix [ 0 ])
+        beacons.mdl
+        [ Button.raised
+        , Button.ripple
+        , Options.onClick (FetchBeacons |> BeaconsMsg)
+        , Options.css "float" "right"
+        ]
+        [ text "fetch beacons" ]
+    , -- create a deployment from beacon
+      Button.render (BeaconsMsg << Mdl)
+        (List.append prefix [ 1 ])
+        beacons.mdl
+        [ Button.raised
+        , Button.ripple
+        , Options.onClick (FetchBeacons |> BeaconsMsg)
+        , Options.css "float" "left"
+        ]
+        [ text "create deployment" ]
+    ]
 
 
 reverse : Order -> Order
