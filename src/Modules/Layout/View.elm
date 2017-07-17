@@ -21,7 +21,6 @@ tabPath str =
 
 view : (Model -> Html Msg) -> List TabWrapper -> Model -> Html Msg
 view viewFn tabs model =
-    -- Cannot find variable `Mdl`
     Material.Scheme.topWithScheme Color.BlueGrey Color.Pink <|
         Layout.render Mdl
             model.mdl
