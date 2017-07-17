@@ -1,15 +1,15 @@
 module Modules.Beacons.View exposing (..)
 
-import Modules.Beacons.Types exposing (..)
-import Modules.Beacons.State exposing (..)
-import Material.Table as Table
-import Material.Options as Options exposing (nop, when)
-import Material.Button as Button
-import Material.Toggles as Toggles
 import Html exposing (..)
 import Html.Attributes exposing (style)
-import Types exposing (Msg(BeaconsMsg), Model)
+import Material.Button as Button
+import Material.Options as Options exposing (nop, when)
+import Material.Table as Table
+import Material.Toggles as Toggles
+import Modules.Beacons.State exposing (..)
+import Modules.Beacons.Types exposing (..)
 import Set exposing (Set)
+import Types exposing (Msg(BeaconsMsg), Model)
 
 
 viewBeaconTable : List Int -> Model -> Html Msg
@@ -52,7 +52,7 @@ viewBeaconTable prefix model =
                             -}
                             (\a -> Mdl a |> BeaconsMsg)
                             (List.append prefix [ -1 ])
-                            model.mdl
+                            bModel.mdl
                             [ Options.onToggle (ToggleAll |> BeaconsMsg)
                             , Toggles.value (allSelected model.beacons)
                             ]
@@ -71,7 +71,7 @@ viewBeaconTable prefix model =
                                 [ Table.td []
                                     [ Toggles.checkbox (\a -> Mdl a |> BeaconsMsg)
                                         (List.append prefix [ idx ])
-                                        model.mdl
+                                        bModel.mdl
                                         [ Options.onToggle (Toggle (key bkn) |> BeaconsMsg)
                                         , Toggles.value <| Set.member (key bkn) bModel.selected
                                         ]
@@ -128,7 +128,7 @@ view model =
         [ viewBeaconTable (List.append prefix [ 0 ]) model
         , Button.render (\a -> Mdl a |> BeaconsMsg)
             (List.append prefix [ 1 ])
-            model.mdl
+            model.beacons.mdl
             [ Button.raised
             , Button.ripple
             , Options.onClick (FetchBeacons |> BeaconsMsg)

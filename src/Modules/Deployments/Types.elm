@@ -1,17 +1,29 @@
 module Modules.Deployments.Types exposing (..)
 
-import Table as SortTable
+import Http
+import Material
+import Material.Table as Table
+import Set exposing (Set)
 
 
 type alias Model =
-    { deployments : Deployments
-    , tableState : SortTable.State
+    { order : Maybe Table.Order
+    , orderField : OrderField
+    , selected : Set String
+    , deployments : Deployments
+    , deploymentsErr : Maybe Http.Error
+    , mdl : Material.Model
     }
+
+
+type OrderField
+    = DName
+    | DMessage
 
 
 type alias Deployment =
     { userId : String
-    , deployName : String
+    , name : String
     , messageName : String
     , beacons : List String
     }
@@ -23,15 +35,24 @@ type alias Deployments =
 
 model : Model
 model =
-    { deployments = testDeployments
-    , tableState = SortTable.initialSort "deployName"
+    { order = Just Table.Ascending
+    , orderField = DName
+    , selected = Set.empty
+    , deployments = testDeployments
+    , deploymentsErr = Nothing
+    , mdl = Material.model
     }
 
 
 type Msg
-    = SetTableState SortTable.State
+    = Toggle String
+    | ToggleAll
+    | Reorder OrderField
+    | NewDeployments (Result Http.Error Deployments)
+    | FetchDeployments
+    | Mdl (Material.Msg Msg)
 
 
 testDeployments : Deployments
 testDeployments =
-    [ { userId = "a", deployName = "dep1", messageName = "msg1", beacons = [] }, { userId = "a", deployName = "dep2", messageName = "msg2", beacons = [] } ]
+    [ { userId = "a", name = "dep1", messageName = "msg1", beacons = [] }, { userId = "a", name = "dep2", messageName = "msg2", beacons = [] } ]
