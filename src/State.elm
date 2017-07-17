@@ -3,6 +3,7 @@ module State exposing (..)
 -- imports
 
 import Material
+import Material.Layout
 import Modules.Beacons.State as BeaconState
 import Modules.Deployments.State as DeploymentState
 import Modules.Layout.State as LayoutState
@@ -45,4 +46,4 @@ update msg model =
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
-    Sub.none
+    Material.Layout.subs Mdl model.mdl

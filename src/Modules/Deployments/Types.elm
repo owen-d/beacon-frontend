@@ -13,6 +13,8 @@ type alias Model =
     , deployments : Deployments
     , deploymentsErr : Maybe Http.Error
     , mdl : Material.Model
+    , curTab : Int
+    , editingDeployment : Maybe Deployment
     }
 
 
@@ -29,6 +31,14 @@ type alias Deployment =
     }
 
 
+type alias Message =
+    { name : String
+    , title : String
+    , url : String
+    , lang : String
+    }
+
+
 type alias Deployments =
     List Deployment
 
@@ -41,6 +51,8 @@ model =
     , deployments = []
     , deploymentsErr = Nothing
     , mdl = Material.model
+    , curTab = 0
+    , editingDeployment = Nothing
     }
 
 
@@ -51,3 +63,4 @@ type Msg
     | NewDeployments (Result Http.Error Deployments)
     | FetchDeployments
     | Mdl (Material.Msg Msg)
+    | SelectTab Int

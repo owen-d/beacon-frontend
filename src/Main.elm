@@ -1,10 +1,10 @@
 module Main exposing (..)
 
-import Types exposing (..)
-import State exposing (..)
-import View exposing (..)
-import Navigation exposing (Location)
 import Modules.Route.Routing exposing (parseLocation)
+import Navigation exposing (Location)
+import State exposing (..)
+import Types exposing (..)
+import View exposing (..)
 
 -- each dir should have: utils (async, helpers), State (update fns, etc), View (rendering logic), Types (models, etc)
 init : Location -> (Model, Cmd Msg)

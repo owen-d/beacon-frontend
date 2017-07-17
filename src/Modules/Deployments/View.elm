@@ -6,12 +6,15 @@ import Material.Button as Button
 import Material.Options as Options
 import Material.Options as Options exposing (nop, when)
 import Material.Table as Table
+import Material.Tabs as Tabs
+import Material.Textfield as Textfield
 import Material.Toggles as Toggles
 import Modules.Deployments.State exposing (..)
 import Modules.Deployments.Types as DeploymentTypes exposing (..)
 import Modules.Utils.View exposing (..)
 import Set exposing (Set)
 import Types exposing (Msg(DeploymentsMsg))
+
 
 viewDeploymentsTable : List Int -> Types.Model -> Html Types.Msg
 viewDeploymentsTable prefix model =
@@ -24,7 +27,6 @@ viewDeploymentsTable prefix model =
             case model.deployments.orderField of
                 DName ->
                     (\mapper a b -> compare (.name a) (.name b) |> mapper)
-
 
                 DMessage ->
                     (\mapper a b -> compare (.messageName a) (.messageName b) |> mapper)
@@ -80,7 +82,18 @@ viewDeploymentsTable prefix model =
                         )
                 )
             ]
-            |> (\x -> Options.div [ Options.center ] [ x ])
+            -- buttons
+            :: Button.render (DeploymentsMsg << Mdl)
+                (List.append prefix [ 1 ])
+                dModel.mdl
+                [ Button.raised
+                , Button.ripple
+                , Options.onClick (FetchDeployments |> DeploymentsMsg)
+                , Options.css "float" "right"
+                ]
+                [ text "fetch deployments" ]
+            :: []
+            |> Options.div [ Options.center ]
 
 
 sortingHeader : Model -> OrderField -> Html Types.Msg
@@ -113,22 +126,12 @@ sortingHeader model field =
 
 
 view : Types.Model -> Html Types.Msg
-view ({deployments} as model) =
+view ({ deployments } as model) =
     let
         prefix =
             [ 0 ]
     in
-        [ viewDeploymentsTable (List.append prefix [ 0 ]) model
-        , Button.render (\a -> Mdl a |> DeploymentsMsg)
-            (List.append prefix [ 1 ])
-            deployments.mdl
-            [ Button.raised
-            , Button.ripple
-            , Options.onClick (FetchDeployments |> DeploymentsMsg)
-            , Options.css "float" "right"
-            ]
-            [ text "fetch deployments" ]
-        ]
+        [ deploymentsTabs (List.append prefix [ 0 ]) model ]
             |> div
                 [ style
                     [ ( "text-align", "center" )
@@ -139,3 +142,70 @@ view ({deployments} as model) =
             |> (\x -> Options.div [ Options.center ] [ x ])
 
 
+deploymentsTabs : List Int -> Types.Model -> Html Types.Msg
+deploymentsTabs prefix ({ deployments } as model) =
+    Tabs.render (DeploymentsMsg << Mdl)
+        (List.append prefix [ 0 ])
+        deployments.mdl
+        [ Tabs.ripple
+        , Tabs.onSelectTab (DeploymentsMsg << SelectTab)
+        , Tabs.activeTab deployments.curTab
+        ]
+        [ Tabs.label
+            [ Options.center ]
+            [ text "Deployments" ]
+        , Tabs.label
+            [ Options.center ]
+            [ text "Edit" ]
+        ]
+        [ case deployments.curTab of
+            1 ->
+                editDeployment (List.append prefix [ 1 ]) model
+
+            _ ->
+                viewDeploymentsTable (List.append prefix [ 2 ]) model
+        ]
+
+
+editDeployment : List Int -> Types.Model -> Html Types.Msg
+editDeployment prefix ({ deployments } as model) =
+    -- name field
+    -- sub-tabs for using msg name or inlining a new msg
+    -- message name field
+    -- message value field
+    -- url field
+    -- lang field
+    [ Textfield.render (DeploymentsMsg << Mdl)
+        (List.append prefix [ 0 ])
+        deployments.mdl
+        [ Textfield.label "Deployment Name"
+        , Textfield.floatingLabel
+        , Textfield.text_
+        ]
+        []
+    , Textfield.render (DeploymentsMsg << Mdl)
+        (List.append prefix [ 1 ])
+        deployments.mdl
+        [ Textfield.label "Message Name"
+        , Textfield.floatingLabel
+        , Textfield.text_
+        ]
+        []
+    , Textfield.render (DeploymentsMsg << Mdl)
+        (List.append prefix [ 2 ])
+        deployments.mdl
+        [ Textfield.label "Notification snippet"
+        , Textfield.floatingLabel
+        , Textfield.text_
+        ]
+        []
+    , Textfield.render (DeploymentsMsg << Mdl)
+        (List.append prefix [ 3 ])
+        deployments.mdl
+        [ Textfield.label "url"
+        , Textfield.floatingLabel
+        , Textfield.text_
+        ]
+        []
+    ]
+        |> Options.div []

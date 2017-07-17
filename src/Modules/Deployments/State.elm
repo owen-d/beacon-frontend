@@ -34,6 +34,9 @@ update msg ({ deployments } as model) =
 
                 FetchDeployments ->
                     lift DeploymentsMsg (model.deployments, fetchDeployments model.jwt)
+
+                SelectTab idx ->
+                    selectTab idx model.deployments
     in
         ( { model | deployments = dModel }, cmd )
 
@@ -117,3 +120,8 @@ allSelected model =
 key : Deployment -> String
 key =
     .name
+
+
+selectTab : Int -> Model -> (Model, Cmd Types.Msg)
+selectTab idx model =
+    ({model | curTab = idx}, Cmd.none)
