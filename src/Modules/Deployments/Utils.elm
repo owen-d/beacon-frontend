@@ -3,6 +3,7 @@ module Modules.Deployments.Utils exposing (..)
 import Http
 import Json.Decode as Decode
 import Modules.Deployments.Types exposing (..)
+import Modules.Messages.Utils exposing (decodeMessage)
 import Utils exposing (..)
 
 
@@ -35,6 +36,11 @@ decodeDeployments =
                 (Decode.map (Maybe.withDefault [])
                     (Decode.field "beacon_names" (Decode.maybe (Decode.list Decode.string)))
                 )
-                (Decode.field "message" <| Decode.succeed Nothing)
+                 -- if message isn't included in response, default to nothing
+                (Decode.oneOf
+                    [ (Decode.field "message" <| Decode.maybe decodeMessage)
+                    , (Decode.succeed Nothing)
+                    ]
+                )
             )
         )
