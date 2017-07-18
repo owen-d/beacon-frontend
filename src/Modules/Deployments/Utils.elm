@@ -28,12 +28,13 @@ decodeDeployments : Decode.Decoder Deployments
 decodeDeployments =
     Decode.field "deployments"
         (Decode.list
-            (Decode.map4 Deployment
+            (Decode.map5 Deployment
                 (Decode.field "user_id" Decode.string)
                 (Decode.field "name" Decode.string)
-                (Decode.field "message_name" Decode.string)
+                (Decode.field "message_name" (Decode.maybe Decode.string))
                 (Decode.map (Maybe.withDefault [])
                     (Decode.field "beacon_names" (Decode.maybe (Decode.list Decode.string)))
                 )
+                (Decode.field "message" <| Decode.succeed Nothing)
             )
         )

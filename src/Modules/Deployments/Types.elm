@@ -3,6 +3,7 @@ module Modules.Deployments.Types exposing (..)
 import Http
 import Material
 import Material.Table as Table
+import Modules.Messages.Types exposing (Message, createMessage, EditMsg(..))
 import Set exposing (Set)
 
 
@@ -14,7 +15,7 @@ type alias Model =
     , deploymentsErr : Maybe Http.Error
     , mdl : Material.Model
     , curTab : Int
-    , editingDeployment : Maybe Deployment
+    , templateDep : Deployment
     }
 
 
@@ -23,19 +24,18 @@ type OrderField
     | DMessage
 
 
+type EditDep
+    = EditDepName String
+    | EditDepMsgName String
+    | MsgFor_EditMsg EditMsg
+
+
 type alias Deployment =
     { userId : String
     , name : String
-    , messageName : String
+    , messageName : Maybe String
     , beacons : List String
-    }
-
-
-type alias Message =
-    { name : String
-    , title : String
-    , url : String
-    , lang : String
+    , message : Maybe Message
     }
 
 
@@ -52,7 +52,7 @@ model =
     , deploymentsErr = Nothing
     , mdl = Material.model
     , curTab = 0
-    , editingDeployment = Nothing
+    , templateDep = Deployment "" "" Nothing [] Nothing
     }
 
 
@@ -64,3 +64,4 @@ type Msg
     | FetchDeployments
     | Mdl (Material.Msg Msg)
     | SelectTab Int
+    | MsgFor_EditDep EditDep

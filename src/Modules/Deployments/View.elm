@@ -11,6 +11,7 @@ import Material.Textfield as Textfield
 import Material.Toggles as Toggles
 import Modules.Deployments.State exposing (..)
 import Modules.Deployments.Types as DeploymentTypes exposing (..)
+import Modules.Messages.Types exposing (EditMsg(..))
 import Modules.Utils.View exposing (..)
 import Set exposing (Set)
 import Types exposing (Msg(DeploymentsMsg))
@@ -29,7 +30,11 @@ viewDeploymentsTable prefix model =
                     (\mapper a b -> compare (.name a) (.name b) |> mapper)
 
                 DMessage ->
-                    (\mapper a b -> compare (.messageName a) (.messageName b) |> mapper)
+                    (\mapper a b ->
+                        compare (Maybe.withDefault "" <| .messageName a)
+                            (Maybe.withDefault "" <| .messageName b)
+                            |> mapper
+                    )
 
         sorter =
             case model.deployments.order of
@@ -77,7 +82,7 @@ viewDeploymentsTable prefix model =
                                         []
                                     ]
                                 , Table.td [] [ text dep.name ]
-                                , Table.td [] [ text dep.messageName ]
+                                , Table.td [] [ text <| Maybe.withDefault "" dep.messageName ]
                                 ]
                         )
                 )
@@ -181,22 +186,27 @@ editDeployment prefix ({ deployments } as model) =
         [ Textfield.label "Deployment Name"
         , Textfield.floatingLabel
         , Textfield.text_
+        , Options.onInput (DeploymentsMsg << MsgFor_EditDep << EditDepName)
         ]
         []
+
+    -- TBD: add a selectbox for current msgnames w/ onInput signature (DeploymentsMsg << EditDepMsgName)
     , Textfield.render (DeploymentsMsg << Mdl)
         (List.append prefix [ 1 ])
         deployments.mdl
         [ Textfield.label "Message Name"
         , Textfield.floatingLabel
         , Textfield.text_
+        , Options.onInput (DeploymentsMsg << MsgFor_EditDep << MsgFor_EditMsg << EditMsgName)
         ]
         []
     , Textfield.render (DeploymentsMsg << Mdl)
         (List.append prefix [ 2 ])
         deployments.mdl
-        [ Textfield.label "Notification snippet"
+        [ Textfield.label "Title"
         , Textfield.floatingLabel
         , Textfield.text_
+        , Options.onInput (DeploymentsMsg << MsgFor_EditDep << MsgFor_EditMsg << EditMsgTitle)
         ]
         []
     , Textfield.render (DeploymentsMsg << Mdl)
@@ -205,6 +215,7 @@ editDeployment prefix ({ deployments } as model) =
         [ Textfield.label "url"
         , Textfield.floatingLabel
         , Textfield.text_
+        , Options.onInput (DeploymentsMsg << MsgFor_EditDep << MsgFor_EditMsg << EditMsgUrl)
         ]
         []
     ]

@@ -5,6 +5,7 @@ import Material
 import Material.Table as Table
 import Modules.Deployments.Types as DepTypes exposing (..)
 import Modules.Deployments.Utils exposing (..)
+import Modules.Messages.Types exposing (Message, EditMsg(..), createMessage)
 import Set exposing (Set)
 import Types exposing (Msg(DeploymentsMsg))
 import Utils exposing (lift)
@@ -33,13 +34,15 @@ update msg ({ deployments } as model) =
                     newDeployments res model.deployments
 
                 FetchDeployments ->
-                    lift DeploymentsMsg (model.deployments, fetchDeployments model.jwt)
+                    lift DeploymentsMsg ( model.deployments, fetchDeployments model.jwt )
 
                 SelectTab idx ->
                     selectTab idx model.deployments
+
+                MsgFor_EditDep msg_->
+                    editDep msg_ model.deployments
     in
         ( { model | deployments = dModel }, cmd )
-
 
 
 toggleAll : Model -> ( Model, Cmd Types.Msg )
@@ -122,6 +125,41 @@ key =
     .name
 
 
-selectTab : Int -> Model -> (Model, Cmd Types.Msg)
+selectTab : Int -> Model -> ( Model, Cmd Types.Msg )
 selectTab idx model =
-    ({model | curTab = idx}, Cmd.none)
+    ( { model | curTab = idx }, Cmd.none )
+
+
+editDep : EditDep -> Model -> ( Model, Cmd Types.Msg )
+editDep msg ({ templateDep } as model) =
+    let
+        updated =
+            case msg of
+                EditDepName str ->
+                    { templateDep | name = str }
+
+                EditDepMsgName str ->
+                    { templateDep | messageName = Just str }
+
+                MsgFor_EditMsg editMsg ->
+                    { templateDep | message = Just (updateMsg editMsg templateDep.message) }
+    in
+        { model | templateDep = updated } ! []
+
+
+updateMsg : EditMsg -> Maybe Message -> Message
+updateMsg updateMsg msg =
+    -- msg could be a Nothing
+    let
+        msgDefaults =
+            Maybe.withDefault createMessage msg
+    in
+        case updateMsg of
+            EditMsgName str ->
+                { msgDefaults | name = str }
+
+            EditMsgTitle str ->
+                { msgDefaults | title = str }
+
+            EditMsgUrl str ->
+                { msgDefaults | url = str }
