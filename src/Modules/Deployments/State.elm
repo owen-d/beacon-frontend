@@ -131,20 +131,20 @@ selectTab idx model =
 
 
 editDep : EditDep -> Model -> ( Model, Cmd Types.Msg )
-editDep msg ({ templateDep } as model) =
+editDep msg ({ editingDep } as model) =
     let
         updated =
             case msg of
                 EditDepName str ->
-                    { templateDep | name = str }
+                    { editingDep | name = str }
 
                 EditDepMsgName str ->
-                    { templateDep | messageName = Just str }
+                    { editingDep | messageName = Just str }
 
                 MsgFor_EditMsg editMsg ->
-                    { templateDep | message = Just (updateMsg editMsg templateDep.message) }
+                    { editingDep | message = Just (updateMsg editMsg editingDep.message) }
     in
-        { model | templateDep = updated } ! []
+        { model | editingDep = updated } ! []
 
 
 updateMsg : EditMsg -> Maybe Message -> Message

@@ -173,7 +173,7 @@ deploymentsTabs prefix ({ deployments } as model) =
 
 
 editDeployment : List Int -> Model -> Html Types.Msg
-editDeployment prefix { templateDep, mdl } =
+editDeployment prefix { editingDep, mdl } =
     -- NOTE: textfields with the floatingLabel property require the value to be linked to the model (current fix)
     -- See: https://github.com/debois/elm-mdl/issues/278
     -- name field
@@ -188,7 +188,7 @@ editDeployment prefix { templateDep, mdl } =
         [ Textfield.label "Deployment Name"
         , Textfield.floatingLabel
         , Textfield.text_
-        , Textfield.value <| templateDep.name
+        , Textfield.value <| editingDep.name
         , Options.onInput (DeploymentsMsg << MsgFor_EditDep << EditDepName)
         ]
         []
@@ -200,7 +200,7 @@ editDeployment prefix { templateDep, mdl } =
         [ Textfield.label "Message Name"
         , Textfield.floatingLabel
         , Textfield.text_
-        , Textfield.value <| Maybe.withDefault "" <| Maybe.map .name templateDep.message
+        , Textfield.value <| Maybe.withDefault "" <| Maybe.map .name editingDep.message
         , Options.onInput (DeploymentsMsg << MsgFor_EditDep << MsgFor_EditMsg << EditMsgName)
         ]
         []
@@ -210,7 +210,7 @@ editDeployment prefix { templateDep, mdl } =
         [ Textfield.label "Title"
         , Textfield.floatingLabel
         , Textfield.text_
-        , Textfield.value <| Maybe.withDefault "" <| Maybe.map .title templateDep.message
+        , Textfield.value <| Maybe.withDefault "" <| Maybe.map .title editingDep.message
         , Options.onInput (DeploymentsMsg << MsgFor_EditDep << MsgFor_EditMsg << EditMsgTitle)
         ]
         []
@@ -220,7 +220,7 @@ editDeployment prefix { templateDep, mdl } =
         [ Textfield.label "url"
         , Textfield.floatingLabel
         , Textfield.text_
-        , Textfield.value <| Maybe.withDefault "" <| Maybe.map .url templateDep.message
+        , Textfield.value <| Maybe.withDefault "" <| Maybe.map .url editingDep.message
         , Options.onInput (DeploymentsMsg << MsgFor_EditDep << MsgFor_EditMsg << EditMsgUrl)
         ]
         []

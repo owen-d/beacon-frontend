@@ -15,7 +15,7 @@ type alias Model =
     , deploymentsErr : Maybe Http.Error
     , mdl : Material.Model
     , curTab : Int
-    , templateDep : Deployment
+    , editingDep : Deployment
     }
 
 
@@ -51,7 +51,7 @@ model =
     , deploymentsErr = Nothing
     , mdl = Material.model
     , curTab = 0
-    , templateDep = Deployment "" Nothing [] Nothing
+    , editingDep = Deployment "" Nothing [] Nothing
     }
 
 
