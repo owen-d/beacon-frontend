@@ -85,8 +85,8 @@ selectedTab : Route -> List TabWrapper -> Int
 selectedTab route tabs =
     -- find index of the route which is selected
     List.indexedMap
-        (\idx ( _, route ) ->
-            if route == route then
+        (\idx ( _, route_ ) ->
+            if route == route_ then
                 idx
             else
                 -- toss anything not matching desired route
