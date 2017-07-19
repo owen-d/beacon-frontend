@@ -31,8 +31,7 @@ type EditDep
 
 
 type alias Deployment =
-    { userId : String
-    , name : String
+    { name : String
     , messageName : Maybe String
     , beacons : List String
     , message : Maybe Message
@@ -52,7 +51,7 @@ model =
     , deploymentsErr = Nothing
     , mdl = Material.model
     , curTab = 0
-    , templateDep = Deployment "" "" Nothing [] Nothing
+    , templateDep = Deployment "" Nothing [] Nothing
     }
 
 

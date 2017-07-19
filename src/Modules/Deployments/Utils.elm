@@ -29,8 +29,7 @@ decodeDeployments : Decode.Decoder Deployments
 decodeDeployments =
     Decode.field "deployments"
         (Decode.list
-            (Decode.map5 Deployment
-                (Decode.field "user_id" Decode.string)
+            (Decode.map4 Deployment
                 (Decode.field "name" Decode.string)
                 (Decode.field "message_name" (Decode.maybe Decode.string))
                 (Decode.map (Maybe.withDefault [])

@@ -165,15 +165,17 @@ deploymentsTabs prefix ({ deployments } as model) =
         ]
         [ case deployments.curTab of
             1 ->
-                editDeployment (List.append prefix [ 1 ]) model
+                editDeployment (List.append prefix [ 1 ]) deployments
 
             _ ->
                 viewDeploymentsTable (List.append prefix [ 2 ]) model
         ]
 
 
-editDeployment : List Int -> Types.Model -> Html Types.Msg
-editDeployment prefix ({ deployments } as model) =
+editDeployment : List Int -> Model -> Html Types.Msg
+editDeployment prefix { templateDep, mdl } =
+    -- NOTE: textfields with the floatingLabel property require the value to be linked to the model (current fix)
+    -- See: https://github.com/debois/elm-mdl/issues/278
     -- name field
     -- sub-tabs for using msg name or inlining a new msg
     -- message name field
@@ -182,10 +184,11 @@ editDeployment prefix ({ deployments } as model) =
     -- lang field
     [ Textfield.render (DeploymentsMsg << Mdl)
         (List.append prefix [ 0 ])
-        deployments.mdl
+        mdl
         [ Textfield.label "Deployment Name"
         , Textfield.floatingLabel
         , Textfield.text_
+        , Textfield.value <| templateDep.name
         , Options.onInput (DeploymentsMsg << MsgFor_EditDep << EditDepName)
         ]
         []
@@ -193,28 +196,31 @@ editDeployment prefix ({ deployments } as model) =
     -- TBD: add a selectbox for current msgnames w/ onInput signature (DeploymentsMsg << EditDepMsgName)
     , Textfield.render (DeploymentsMsg << Mdl)
         (List.append prefix [ 1 ])
-        deployments.mdl
+        mdl
         [ Textfield.label "Message Name"
         , Textfield.floatingLabel
         , Textfield.text_
+        , Textfield.value <| Maybe.withDefault "" <| Maybe.map .name templateDep.message
         , Options.onInput (DeploymentsMsg << MsgFor_EditDep << MsgFor_EditMsg << EditMsgName)
         ]
         []
     , Textfield.render (DeploymentsMsg << Mdl)
         (List.append prefix [ 2 ])
-        deployments.mdl
+        mdl
         [ Textfield.label "Title"
         , Textfield.floatingLabel
         , Textfield.text_
+        , Textfield.value <| Maybe.withDefault "" <| Maybe.map .title templateDep.message
         , Options.onInput (DeploymentsMsg << MsgFor_EditDep << MsgFor_EditMsg << EditMsgTitle)
         ]
         []
     , Textfield.render (DeploymentsMsg << Mdl)
         (List.append prefix [ 3 ])
-        deployments.mdl
+        mdl
         [ Textfield.label "url"
         , Textfield.floatingLabel
         , Textfield.text_
+        , Textfield.value <| Maybe.withDefault "" <| Maybe.map .url templateDep.message
         , Options.onInput (DeploymentsMsg << MsgFor_EditDep << MsgFor_EditMsg << EditMsgUrl)
         ]
         []

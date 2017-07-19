@@ -1,9 +1,9 @@
 module Modules.Beacons.Types exposing (..)
 
 import Http
-import Set exposing (Set)
-import Material.Table as Table
 import Material
+import Material.Table as Table
+import Set exposing (Set)
 
 
 type alias BeaconsModel =
@@ -24,7 +24,6 @@ type OrderField
 
 type alias Beacon =
     { name : String
-    , userId : String
     , deployName : String
     }
 

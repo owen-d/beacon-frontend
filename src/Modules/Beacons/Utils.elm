@@ -1,9 +1,9 @@
 module Modules.Beacons.Utils exposing (..)
 
-import Modules.Beacons.Types exposing (..)
-import Utils exposing (..)
 import Http
 import Json.Decode as Decode
+import Modules.Beacons.Types exposing (..)
+import Utils exposing (..)
 
 fetchBeacons : String -> Cmd BeaconsMsg
 fetchBeacons jwt =
@@ -27,9 +27,8 @@ decodeBeacons : Decode.Decoder Beacons
 decodeBeacons =
     Decode.field "beacons"
         (Decode.list
-            (Decode.map3 Beacon
+            (Decode.map2 Beacon
                 (Decode.field "name" Decode.string)
-                (Decode.field "user_id" Decode.string)
                 (Decode.field "deploy_name" Decode.string)
             )
         )
