@@ -5,44 +5,50 @@ import Material
 import Material.Table as Table
 import Modules.Beacons.Types as BeaconTypes exposing (..)
 import Modules.Beacons.Utils exposing (..)
+import Modules.Route.Types exposing (Route(..))
 import Set exposing (Set)
 import Types exposing (Model, Msg(BeaconsMsg))
-import Utils exposing (lift)
 
 
 update : BeaconsMsg -> Model -> ( Model, Cmd Msg )
-update msg model =
-    let
-        ( bModel, cmd ) =
-            case msg of
-                Mdl msg_ ->
-                    lift BeaconsMsg (Material.update Mdl msg_ model.beacons)
+update msg ({ beacons } as model) =
+    case msg of
+        Mdl msg_ ->
+            let
+                ( bModel, bMsg ) =
+                    Material.update Mdl msg_ beacons
+            in
+                ( { model | beacons = bModel }, Cmd.map BeaconsMsg bMsg )
 
-                -- Click on master checkbox
-                ToggleAll ->
-                    toggleAll model.beacons
+        -- Click on master checkbox
+        ToggleAll ->
+            { model | beacons = toggleAll beacons } ! []
 
-                -- Click on specific checkbox `idx`
-                Toggle idx ->
-                    toggleBkn idx model.beacons
+        -- Click on specific checkbox `idx`
+        Toggle idx ->
+            { model | beacons = toggleBkn idx beacons } ! []
 
-                Reorder field ->
-                    reorder field model.beacons
+        Reorder field ->
+            { model | beacons = reorder field beacons } ! []
 
-                NewBeacons res ->
-                    newBeacons res model.beacons
+        NewBeacons res ->
+            let
+                ( beacons_, msg ) =
+                    newBeacons res beacons
+            in
+                ( { model | beacons = beacons_ }, msg )
 
-                FetchBeacons ->
-                    ( model.beacons
-                    , fetchBeacons model.jwt
-                        -- enclose BeaconsMsg as Msg variant BeaconsMsg (same name)
-                        |> Cmd.map BeaconsMsg
-                    )
-    in
-        ( { model | beacons = bModel }, cmd )
+        FetchBeacons ->
+            ( model
+              -- enclose BeaconsMsg as Msg variant BeaconsMsg (same name)
+            , Cmd.map BeaconsMsg (fetchBeacons model.jwt)
+            )
+
+        NewDeployment bknNames ->
+            newDeployment model
 
 
-toggleAll : BeaconsModel -> ( BeaconsModel, Cmd Msg )
+toggleAll : BeaconsModel -> BeaconsModel
 toggleAll model =
     { model
         | selected =
@@ -51,19 +57,18 @@ toggleAll model =
             else
                 List.map .name model.beacons |> Set.fromList
     }
-        ! []
 
 
-toggleBkn : String -> BeaconsModel -> ( BeaconsModel, Cmd Msg )
+toggleBkn : String -> BeaconsModel -> BeaconsModel
 toggleBkn idx model =
-    { model | selected = toggle idx model.selected } ! []
+    { model | selected = toggle idx model.selected }
 
 
-reorder : OrderField -> BeaconsModel -> ( BeaconsModel, Cmd Msg )
+reorder : OrderField -> BeaconsModel -> BeaconsModel
 reorder field model =
     {- if rotating field is currently selected, rotate it -}
     if (==) field model.orderField then
-        { model | order = rotate model.order } ! []
+        { model | order = rotate model.order }
     else
         {- otherwise, change selected field, re-initialize order & recurse -}
         reorder field { model | order = Nothing, orderField = field }
@@ -120,3 +125,30 @@ allSelected model =
 key : Beacon -> String
 key =
     .name
+
+
+newDeployment : Model -> ( Model, Cmd Msg )
+newDeployment ({ beacons, deployments } as model) =
+    let
+        bNames =
+            Set.toList beacons.selected
+
+        editingDep =
+            .editingDep deployments
+
+        -- set selected beacons as depBeacons.
+        updatedDep1 =
+            { editingDep | beacons = bNames }
+
+        deps_1 =
+            { deployments | editingDep = updatedDep1 }
+
+        -- set current tab to 'edit pane' on deployments page
+        deps_2 =
+            { deps_1 | curTab = 1 }
+
+        model_ =
+            { model | deployments = deps_2 }
+    in
+        -- change route to edit dep page
+        { model_ | route = DeploymentsRoute } ! []

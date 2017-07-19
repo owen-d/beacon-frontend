@@ -131,7 +131,7 @@ view model =
             [ 0 ]
     in
         viewBeaconTable (List.append prefix [ 0 ]) model
-            :: beaconButtons (List.append prefix [ 1 ]) model
+            :: beaconButtons (List.append prefix [ 1 ]) model.beacons
             |> div
                 [ style
                     [ ( "text-align", "center" )
@@ -142,15 +142,15 @@ view model =
             |> (\x -> Options.div [ Options.center ] [ x ])
 
 
-beaconButtons : List Int -> Model -> List (Html Msg)
-beaconButtons prefix ({ beacons } as model) =
+beaconButtons : List Int -> BeaconsModel -> List (Html Msg)
+beaconButtons prefix ({ beacons, selected } as model) =
     [ -- create a deployment from beacon
       Button.render (BeaconsMsg << Mdl)
         (List.append prefix [ 1 ])
-        beacons.mdl
+        model.mdl
         [ Button.raised
         , Button.ripple
-        , Options.onClick (FetchBeacons |> BeaconsMsg)
+        , Options.onClick <| BeaconsMsg <| NewDeployment selected
         , Options.css "float" "right"
         ]
         [ text "create deployment" ]

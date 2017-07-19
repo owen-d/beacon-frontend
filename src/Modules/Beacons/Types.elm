@@ -49,4 +49,5 @@ type BeaconsMsg
     | Reorder OrderField
     | NewBeacons (Result Http.Error Beacons)
     | FetchBeacons
+    | NewDeployment (Set String)
     | Mdl (Material.Msg BeaconsMsg)
