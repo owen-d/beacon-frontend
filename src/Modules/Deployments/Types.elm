@@ -4,13 +4,12 @@ import Http
 import Material
 import Material.Table as Table
 import Modules.Messages.Types exposing (Message, createMessage, EditMsg(..))
-import Set exposing (Set)
 
 
 type alias Model =
     { order : Maybe Table.Order
     , orderField : OrderField
-    , selected : Set String
+    , selected : Maybe String
     , deployments : Deployments
     , deploymentsErr : Maybe Http.Error
     , mdl : Material.Model
@@ -46,7 +45,7 @@ model : Model
 model =
     { order = Just Table.Ascending
     , orderField = DName
-    , selected = Set.empty
+    , selected = Nothing
     , deployments = []
     , deploymentsErr = Nothing
     , mdl = Material.model
@@ -57,7 +56,6 @@ model =
 
 type Msg
     = Toggle String
-    | ToggleAll
     | Reorder OrderField
     | NewDeployments (Result Http.Error Deployments)
     | FetchDeployments

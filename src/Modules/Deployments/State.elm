@@ -6,7 +6,6 @@ import Material.Table as Table
 import Modules.Deployments.Types as DepTypes exposing (..)
 import Modules.Deployments.Utils exposing (..)
 import Modules.Messages.Types exposing (Message, EditMsg(..), createMessage)
-import Set exposing (Set)
 import Types exposing (Msg(DeploymentsMsg))
 import Utils exposing (lift)
 
@@ -19,13 +18,9 @@ update msg ({ deployments } as model) =
                 Mdl msg_ ->
                     lift DeploymentsMsg (Material.update Mdl msg_ model.deployments)
 
-                -- Click on master checkbox
-                ToggleAll ->
-                    toggleAll model.deployments
-
                 -- Click on specific checkbox `idx`
-                Toggle idx ->
-                    toggleDep idx model.deployments
+                Toggle id ->
+                    toggleDep id model.deployments
 
                 Reorder field ->
                     reorder field model.deployments
@@ -39,27 +34,15 @@ update msg ({ deployments } as model) =
                 SelectTab idx ->
                     selectTab idx model.deployments
 
-                MsgFor_EditDep msg_->
+                MsgFor_EditDep msg_ ->
                     editDep msg_ model.deployments
     in
         ( { model | deployments = dModel }, cmd )
 
 
-toggleAll : Model -> ( Model, Cmd Types.Msg )
-toggleAll model =
-    { model
-        | selected =
-            if allSelected model then
-                Set.empty
-            else
-                List.map .name model.deployments |> Set.fromList
-    }
-        ! []
-
-
 toggleDep : String -> Model -> ( Model, Cmd Types.Msg )
-toggleDep idx model =
-    { model | selected = toggle idx model.selected } ! []
+toggleDep id model =
+    { model | selected = toggle id model.selected } ! []
 
 
 reorder : OrderField -> Model -> ( Model, Cmd Types.Msg )
@@ -99,25 +82,22 @@ rotate order =
 {- Toggle whether or not a set `set` contains an element `x`. -}
 
 
-toggle : comparable -> Set comparable -> Set comparable
-toggle x set =
-    if Set.member x set then
-        Set.remove x set
-    else
-        Set.insert x set
+toggle : comparable -> Maybe comparable -> Maybe comparable
+toggle new selected =
+    case selected of
+        Just old ->
+            -- toggle off
+            if old == new then
+                Nothing
+            -- set new dep
+            else
+                Just new
+        -- if none selected, set new dep
+        Nothing -> Just new
 
 
 
 {- True iff all rows are currently selected. -}
-
-
-allSelected : Model -> Bool
-allSelected model =
-    let
-        ln =
-            List.length model.deployments
-    in
-        (Set.size model.selected == ln) && ((/=) ln 0)
 
 
 key : Deployment -> String

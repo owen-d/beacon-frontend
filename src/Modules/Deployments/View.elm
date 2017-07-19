@@ -12,7 +12,6 @@ import Modules.Deployments.State exposing (..)
 import Modules.Deployments.Types as DeploymentTypes exposing (..)
 import Modules.Messages.Types exposing (EditMsg(..))
 import Modules.Utils.View exposing (..)
-import Set exposing (Set)
 import Types exposing (Msg(DeploymentsMsg))
 
 
@@ -49,19 +48,7 @@ viewDeploymentsTable prefix model =
         Table.table []
             [ Table.thead []
                 [ Table.tr []
-                    [ Table.th []
-                        [ Toggles.checkbox
-                            {- append -1 to index for MDL. table data will use indexedMap,
-                               therefore taking the spots 0->
-                            -}
-                            (\a -> Mdl a |> DeploymentsMsg)
-                            (List.append prefix [ -1 ])
-                            model.mdl
-                            [ Options.onToggle (ToggleAll |> DeploymentsMsg)
-                            , Toggles.value (allSelected dModel)
-                            ]
-                            []
-                        ]
+                    [ Table.th [] []
                     , sortingHeader dModel DName
                     , sortingHeader dModel DMessage
                     ]
@@ -71,7 +58,7 @@ viewDeploymentsTable prefix model =
                     |> List.indexedMap
                         (\idx dep ->
                             Table.tr
-                                [ Table.selected |> when (Set.member (key dep) dModel.selected)
+                                [ Table.selected |> when (isSelected (key dep) dModel.selected)
                                 , Options.onClick (Toggle (key dep) |> DeploymentsMsg)
                                 ]
                                 [ Table.td []
@@ -79,7 +66,7 @@ viewDeploymentsTable prefix model =
                                         (List.append prefix [ idx ])
                                         dModel.mdl
                                         [ Options.onToggle (Toggle (key dep) |> DeploymentsMsg)
-                                        , Toggles.value <| Set.member (key dep) dModel.selected
+                                        , Toggles.value <| isSelected (key dep) dModel.selected
                                         ]
                                         []
                                     ]
@@ -92,6 +79,11 @@ viewDeploymentsTable prefix model =
             -- buttons
             :: []
             |> Options.div [ Options.center ]
+
+
+isSelected : String -> Maybe String -> Bool
+isSelected id selected =
+    (==) selected <| Just id
 
 
 sortingHeader : Model -> OrderField -> Html Types.Msg
