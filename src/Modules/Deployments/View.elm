@@ -2,7 +2,6 @@ module Modules.Deployments.View exposing (..)
 
 import Html exposing (..)
 import Html.Attributes exposing (style)
-import Material.Button as Button
 import Material.Options as Options
 import Material.Options as Options exposing (nop, when)
 import Material.Table as Table
@@ -71,8 +70,10 @@ viewDeploymentsTable prefix model =
                 (sorter dModel.deployments
                     |> List.indexedMap
                         (\idx dep ->
-                            Table.tr [ Table.selected |> when (Set.member (key dep) dModel.selected)
-                                     , Options.onClick (Toggle (key dep) |> DeploymentsMsg)]
+                            Table.tr
+                                [ Table.selected |> when (Set.member (key dep) dModel.selected)
+                                , Options.onClick (Toggle (key dep) |> DeploymentsMsg)
+                                ]
                                 [ Table.td []
                                     [ Toggles.checkbox (\a -> Mdl a |> DeploymentsMsg)
                                         (List.append prefix [ idx ])
@@ -89,15 +90,6 @@ viewDeploymentsTable prefix model =
                 )
             ]
             -- buttons
-            :: Button.render (DeploymentsMsg << Mdl)
-                (List.append prefix [ 1 ])
-                dModel.mdl
-                [ Button.raised
-                , Button.ripple
-                , Options.onClick (FetchDeployments |> DeploymentsMsg)
-                , Options.css "float" "right"
-                ]
-                [ text "fetch deployments" ]
             :: []
             |> Options.div [ Options.center ]
 

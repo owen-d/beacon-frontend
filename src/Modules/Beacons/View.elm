@@ -69,6 +69,7 @@ viewBeaconTable prefix model =
                         (\idx bkn ->
                             Table.tr
                                 [ Table.selected |> when (Set.member (key bkn) bModel.selected)
+
                                 -- little hack: must have click handler on toggle & surrounding div
                                 , Options.onClick (Toggle (key bkn) |> BeaconsMsg)
                                 ]
@@ -143,24 +144,14 @@ view model =
 
 beaconButtons : List Int -> Model -> List (Html Msg)
 beaconButtons prefix ({ beacons } as model) =
-    -- fetch more beacons
-    [ Button.render (BeaconsMsg << Mdl)
-        (List.append prefix [ 0 ])
-        beacons.mdl
-        [ Button.raised
-        , Button.ripple
-        , Options.onClick (FetchBeacons |> BeaconsMsg)
-        , Options.css "float" "right"
-        ]
-        [ text "fetch beacons" ]
-    , -- create a deployment from beacon
+    [ -- create a deployment from beacon
       Button.render (BeaconsMsg << Mdl)
         (List.append prefix [ 1 ])
         beacons.mdl
         [ Button.raised
         , Button.ripple
         , Options.onClick (FetchBeacons |> BeaconsMsg)
-        , Options.css "float" "left"
+        , Options.css "float" "right"
         ]
         [ text "create deployment" ]
     ]

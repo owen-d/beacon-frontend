@@ -7,7 +7,7 @@ import Material.Layout
 import Modules.Beacons.State as BeaconState
 import Modules.Deployments.State as DeploymentState
 import Modules.Layout.State as LayoutState
-import Modules.Route.Routing exposing (parseLocation)
+import Modules.Route.Routing exposing (parseLocation, handleRouteChange)
 import Types exposing (..)
 
 
@@ -24,11 +24,7 @@ update msg model =
             Material.update Mdl msg_ model
 
         LocationChange location ->
-            let
-                newRoute =
-                    parseLocation location
-            in
-                ( { model | route = newRoute }, Cmd.none )
+            handleRouteChange model (parseLocation location)
 
         LayoutMsg msg ->
             LayoutState.updateLayout msg model
@@ -47,3 +43,5 @@ update msg model =
 subscriptions : Model -> Sub Msg
 subscriptions model =
     Material.Layout.subs Mdl model.mdl
+
+

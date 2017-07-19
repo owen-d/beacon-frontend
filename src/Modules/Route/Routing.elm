@@ -20,7 +20,7 @@ matchers =
 
 parseLocation : Location -> Route
 parseLocation location =
-    case (parseHash matchers location) of
+    case (parsePath matchers location) of
         Just route ->
             route
 
@@ -29,7 +29,7 @@ parseLocation location =
 
 
 routeInit : Model -> Cmd Msg
-routeInit ({route} as model) =
+routeInit ({ route } as model) =
     case route of
         BeaconsRoute ->
             fetchBeacons model.jwt |> Cmd.map BeaconsMsg
@@ -42,3 +42,12 @@ routeInit ({route} as model) =
 
         NotFoundRoute ->
             Cmd.none
+
+handleRouteChange : Model -> Route -> ( Model, Cmd Msg )
+handleRouteChange model newRoute =
+    let
+        _ = Debug.log "newr" newRoute
+        model_ =
+            { model | route = newRoute }
+    in
+        ( model_, routeInit model_ )

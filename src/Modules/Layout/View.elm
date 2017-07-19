@@ -12,12 +12,6 @@ import Modules.Route.Types exposing (Route(BeaconsRoute))
 import Types exposing (Model, Msg(Mdl, LayoutMsg, None))
 
 
-tabPath : String -> String
-tabPath str =
-    String.toLower str
-        |> (++) "#"
-
-
 view : (Model -> Html Msg) -> List TabWrapper -> Model -> Html Msg
 view viewFn tabs model =
     Material.Scheme.topWithScheme Color.BlueGrey Color.Pink <|

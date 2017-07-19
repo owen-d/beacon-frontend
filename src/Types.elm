@@ -26,7 +26,7 @@ model =
     , beacons = BeaconTypes.model
     , jwt = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1MTQzOTYzOTksImlhdCI6MTQ5ODg0NDM5OSwidXNlcl9pZCI6IjZiYTdiODEwLTlkYWQtMTFkMS04MGI0LTAwYzA0ZmQ0MzBjOCJ9._Mn0COXwcs9l4NqqAbbosXWCTMentdy4xj9ZqgKhEF0"
     , mdl = Material.model
-    , route = BeaconsRoute
+    , route = NotFoundRoute
     , deployments = Deployments.model
     }
 
