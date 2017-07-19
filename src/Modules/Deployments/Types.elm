@@ -66,4 +66,5 @@ type Msg
     | Mdl (Material.Msg Msg)
     | SelectTab Int
     | MsgFor_EditDep EditDep
-    | PostedDeployment (Result Http.Error Deployment)
+    | PostDeployment Deployment
+    | PostDeploymentResponse (Result Http.Error Deployment)

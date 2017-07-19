@@ -46,7 +46,6 @@ routeInit ({ route } as model) =
 handleRouteChange : Model -> Route -> ( Model, Cmd Msg )
 handleRouteChange model newRoute =
     let
-        _ = Debug.log "newr" newRoute
         model_ =
             { model | route = newRoute }
     in

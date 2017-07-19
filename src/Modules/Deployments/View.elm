@@ -2,7 +2,7 @@ module Modules.Deployments.View exposing (..)
 
 import Html exposing (..)
 import Html.Attributes exposing (style)
-import Material.Options as Options
+import Material.Button as Button
 import Material.Options as Options exposing (nop, when)
 import Material.Table as Table
 import Material.Tabs as Tabs
@@ -171,7 +171,8 @@ editDeployment prefix { editingDep, mdl } =
     List.indexedMap
         (\idx ( label, val, rxn ) ->
             Textfield.render (DeploymentsMsg << Mdl)
-                (List.append prefix [ idx ])
+                -- use prefix + 0 as base for each textfield component
+                (List.append prefix [ 0, idx ])
                 mdl
                 [ Textfield.label label
                 , Textfield.floatingLabel
@@ -199,4 +200,18 @@ editDeployment prefix { editingDep, mdl } =
           , DeploymentsMsg << MsgFor_EditDep << MsgFor_EditMsg << EditMsgUrl
           )
         ]
+        -- add button at end
+        |> (\a ->
+                List.append a
+                    [ Button.render (DeploymentsMsg << Mdl)
+                        (List.append prefix [ 1 ])
+                        model.mdl
+                        [ Button.raised
+                        , Button.ripple
+                        , Options.css "float" "right"
+                        , Options.onClick <| DeploymentsMsg <| PostDeployment editingDep
+                        ]
+                        [ text "create campaign" ]
+                    ]
+           )
         |> Options.div []

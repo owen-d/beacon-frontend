@@ -153,7 +153,7 @@ beaconButtons prefix ({ beacons, selected } as model) =
         , Options.onClick <| BeaconsMsg <| NewDeployment selected
         , Options.css "float" "right"
         ]
-        [ text "create deployment" ]
+        [ text "configure message" ]
     ]
 
 

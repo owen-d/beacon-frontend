@@ -37,7 +37,10 @@ update msg ({ deployments } as model) =
                 MsgFor_EditDep msg_ ->
                     editDep msg_ model.deployments
 
-                PostedDeployment msg_ ->
+                PostDeployment dep ->
+                    lift DeploymentsMsg ( deployments, postDeployment model.jwt dep )
+
+                PostDeploymentResponse msg_ ->
                     handlePostedDeployment msg_ model.deployments
     in
         ( { model | deployments = dModel }, cmd )

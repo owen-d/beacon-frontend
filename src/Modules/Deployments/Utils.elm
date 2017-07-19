@@ -76,7 +76,7 @@ postDeployment jwt dep =
         params_ =
             { params | method = "POST" }
     in
-        Http.send PostedDeployment
+        Http.send PostDeploymentResponse
             (authReq
                 (Just jwt)
                 params_
