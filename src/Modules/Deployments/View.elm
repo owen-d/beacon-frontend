@@ -161,7 +161,8 @@ deploymentsTabs prefix ({ deployments } as model) =
             [ text "Deployments" ]
         , Tabs.label
             [ Options.center ]
-            [ text "Edit" ]
+            -- for similar tab sizes
+            [ Options.span [ Options.css "width" "8em" ] [ text "Edit" ] ]
         ]
         [ case deployments.curTab of
             1 ->
@@ -182,47 +183,35 @@ editDeployment prefix { editingDep, mdl } =
     -- message value field
     -- url field
     -- lang field
-    [ Textfield.render (DeploymentsMsg << Mdl)
-        (List.append prefix [ 0 ])
-        mdl
-        [ Textfield.label "Deployment Name"
-        , Textfield.floatingLabel
-        , Textfield.text_
-        , Textfield.value <| editingDep.name
-        , Options.onInput (DeploymentsMsg << MsgFor_EditDep << EditDepName)
+    List.indexedMap
+        (\idx ( label, val, rxn ) ->
+            Textfield.render (DeploymentsMsg << Mdl)
+                (List.append prefix [ idx ])
+                mdl
+                [ Textfield.label label
+                , Textfield.floatingLabel
+                , Textfield.text_
+                , Textfield.value val
+                , Options.onInput rxn
+                ]
+                []
+        )
+        -- TBD: add a selectbox for current msgnames w/ onInput signature (DeploymentsMsg << EditDepMsgName)
+        [ ( "Deployment Name"
+          , editingDep.name
+          , DeploymentsMsg << MsgFor_EditDep << EditDepName
+          )
+        , ( "Message Name"
+          , Maybe.withDefault "" <| Maybe.map .name editingDep.message
+          , DeploymentsMsg << MsgFor_EditDep << MsgFor_EditMsg << EditMsgName
+          )
+        , ( "Title"
+          , Maybe.withDefault "" <| Maybe.map .title editingDep.message
+          , DeploymentsMsg << MsgFor_EditDep << MsgFor_EditMsg << EditMsgTitle
+          )
+        , ( "Url"
+          , Maybe.withDefault "" <| Maybe.map .url editingDep.message
+          , DeploymentsMsg << MsgFor_EditDep << MsgFor_EditMsg << EditMsgUrl
+          )
         ]
-        []
-
-    -- TBD: add a selectbox for current msgnames w/ onInput signature (DeploymentsMsg << EditDepMsgName)
-    , Textfield.render (DeploymentsMsg << Mdl)
-        (List.append prefix [ 1 ])
-        mdl
-        [ Textfield.label "Message Name"
-        , Textfield.floatingLabel
-        , Textfield.text_
-        , Textfield.value <| Maybe.withDefault "" <| Maybe.map .name editingDep.message
-        , Options.onInput (DeploymentsMsg << MsgFor_EditDep << MsgFor_EditMsg << EditMsgName)
-        ]
-        []
-    , Textfield.render (DeploymentsMsg << Mdl)
-        (List.append prefix [ 2 ])
-        mdl
-        [ Textfield.label "Title"
-        , Textfield.floatingLabel
-        , Textfield.text_
-        , Textfield.value <| Maybe.withDefault "" <| Maybe.map .title editingDep.message
-        , Options.onInput (DeploymentsMsg << MsgFor_EditDep << MsgFor_EditMsg << EditMsgTitle)
-        ]
-        []
-    , Textfield.render (DeploymentsMsg << Mdl)
-        (List.append prefix [ 3 ])
-        mdl
-        [ Textfield.label "url"
-        , Textfield.floatingLabel
-        , Textfield.text_
-        , Textfield.value <| Maybe.withDefault "" <| Maybe.map .url editingDep.message
-        , Options.onInput (DeploymentsMsg << MsgFor_EditDep << MsgFor_EditMsg << EditMsgUrl)
-        ]
-        []
-    ]
         |> Options.div []
