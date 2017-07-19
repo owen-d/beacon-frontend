@@ -59,13 +59,13 @@ viewDeploymentsTable prefix model =
                         (\idx dep ->
                             Table.tr
                                 [ Table.selected |> when (isSelected (key dep) dModel.selected)
-                                , Options.onClick (Toggle (key dep) |> DeploymentsMsg)
+                                , Options.onClick (Toggle dep |> DeploymentsMsg)
                                 ]
                                 [ Table.td []
                                     [ Toggles.checkbox (\a -> Mdl a |> DeploymentsMsg)
                                         (List.append prefix [ idx ])
                                         dModel.mdl
-                                        [ Options.onToggle (Toggle (key dep) |> DeploymentsMsg)
+                                        [ Options.onToggle (Toggle dep |> DeploymentsMsg)
                                         , Toggles.value <| isSelected (key dep) dModel.selected
                                         ]
                                         []

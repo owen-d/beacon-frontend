@@ -19,8 +19,8 @@ update msg ({ deployments } as model) =
                     lift DeploymentsMsg (Material.update Mdl msg_ model.deployments)
 
                 -- Click on specific checkbox `idx`
-                Toggle id ->
-                    toggleDep id model.deployments
+                Toggle dep ->
+                    toggleDep dep model.deployments
 
                 Reorder field ->
                     reorder field model.deployments
@@ -40,9 +40,13 @@ update msg ({ deployments } as model) =
         ( { model | deployments = dModel }, cmd )
 
 
-toggleDep : String -> Model -> ( Model, Cmd Types.Msg )
-toggleDep id model =
-    { model | selected = toggle id model.selected } ! []
+toggleDep : Deployment -> Model -> ( Model, Cmd Types.Msg )
+toggleDep dep model =
+    let
+        m_ =
+            { model | selected = toggle (key dep) model.selected }
+    in
+        { m_ | editingDep = dep } ! []
 
 
 reorder : OrderField -> Model -> ( Model, Cmd Types.Msg )
@@ -89,11 +93,13 @@ toggle new selected =
             -- toggle off
             if old == new then
                 Nothing
-            -- set new dep
+                -- set new dep
             else
                 Just new
+
         -- if none selected, set new dep
-        Nothing -> Just new
+        Nothing ->
+            Just new
 
 
 

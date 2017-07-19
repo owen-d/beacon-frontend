@@ -55,7 +55,7 @@ model =
 
 
 type Msg
-    = Toggle String
+    = Toggle Deployment
     | Reorder OrderField
     | NewDeployments (Result Http.Error Deployments)
     | FetchDeployments
