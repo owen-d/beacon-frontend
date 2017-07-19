@@ -2,8 +2,9 @@ module Modules.Deployments.Utils exposing (..)
 
 import Http
 import Json.Decode as Decode
+import Json.Encode as Encode
 import Modules.Deployments.Types exposing (..)
-import Modules.Messages.Utils exposing (decodeMessage)
+import Modules.Messages.Utils exposing (decodeMessage, encodeMessage)
 import Utils exposing (..)
 
 
@@ -35,7 +36,7 @@ decodeDeployments =
                 (Decode.map (Maybe.withDefault [])
                     (Decode.field "beacon_names" (Decode.maybe (Decode.list Decode.string)))
                 )
-                 -- if message isn't included in response, default to nothing
+                -- if message isn't included in response, default to nothing
                 (Decode.oneOf
                     [ (Decode.field "message" <| Decode.maybe decodeMessage)
                     , (Decode.succeed Nothing)
@@ -43,3 +44,21 @@ decodeDeployments =
                 )
             )
         )
+
+
+encodeDeployment : Deployment -> Encode.Value
+encodeDeployment dep =
+    let
+        baseAttrs =
+            [ ( "name", Encode.string dep.name )
+            , ( "beacons", List.map Encode.string dep.beacons |> Encode.list )
+            ]
+
+        optionalAttrs =
+            [ ( "messageName", Maybe.map Encode.string dep.messageName )
+            , ( "message", Maybe.map encodeMessage dep.message )
+            ]
+                |> maybeDecode
+                |> List.take 1
+    in
+        Encode.object <| List.append baseAttrs optionalAttrs

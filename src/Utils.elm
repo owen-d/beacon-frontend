@@ -3,8 +3,9 @@ module Utils exposing (..)
 -- imports
 
 import Http
-import Time
 import Json.Decode as Decode
+import Json.Encode as Encode
+import Time
 
 
 type alias ReqParams a =
@@ -55,3 +56,21 @@ authReq token ({ headers } as reqParams) decoder =
 lift : (a -> b) -> ( m, Cmd a ) -> ( m, Cmd b )
 lift mapper ( model, cmd ) =
     ( model, Cmd.map mapper cmd )
+
+
+
+-- Decoder util for optional fields
+
+
+maybeDecode : List ( String, Maybe Encode.Value ) -> List ( String, Encode.Value )
+maybeDecode col =
+    col
+        |> List.filterMap
+            (\( field, val ) ->
+                case val of
+                    Just x ->
+                        Just ( field, x )
+
+                    Nothing ->
+                        Nothing
+            )
