@@ -2,11 +2,10 @@ module Modules.Layout.View exposing (..)
 
 import Array
 import Html exposing (..)
-import Html.Attributes exposing (..)
 import Material.Color as Color
 import Material.Footer as Footer
 import Material.Layout as Layout
-import Material.Options as Options
+import Material.Options as Options exposing (css)
 import Material.Scheme
 import Modules.Layout.Types exposing (LayoutMsg(SelectTab), TabWrapper)
 import Modules.Route.Types exposing (Route(BeaconsRoute))
@@ -27,18 +26,29 @@ view viewFn tabs model =
             [ Layout.fixedHeader
             , Layout.selectedTab <| selectedTab model.route tabs
             , Layout.onSelectTab <| selectTab tabs
+            , Layout.transparentHeader
             ]
-            { header = [ h1 [ style [ ( "padding", "2rem" ) ] ] [ text "beaconthing" ] ]
+            { header = header
             , drawer = []
             , tabs = ( List.map (\( name, _ ) -> text name) tabs, [] )
             , main =
-                -- wrap with div setting background color
-                [ [ viewFn model
-                  , viewFooter
-                  ]
-                    |> Options.div []
+                [ stylesheet
+                , viewFn model
+                , viewFooter
                 ]
             }
+
+
+header : List (Html Msg)
+header =
+    [ Layout.row
+        [ css "height" "8em"
+        , css "transition" "height 333ms ease-in-out 0s"
+        ]
+        [ Layout.title [] [ text "Beacon Thing" ]
+        , Layout.spacer
+        ]
+    ]
 
 
 viewFooter : Html Msg
@@ -96,3 +106,17 @@ selectedTab route tabs =
         |> List.filter (\a -> (>=) a 0)
         |> List.head
         |> Maybe.withDefault 0
+
+
+stylesheet : Html a
+stylesheet =
+    Options.stylesheet """
+  .mdl-layout__header--transparent {
+    background: url('https://getmdl.io/assets/demos/transparent.jpg') center / cover;
+  }
+  .mdl-layout__header--transparent .mdl-layout__drawer-button {
+    /* This background is dark, so we set text to white. Use 87% black instead if
+       your background is light. */
+    color: white;
+  }
+"""
