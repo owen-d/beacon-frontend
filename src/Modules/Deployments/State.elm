@@ -36,6 +36,9 @@ update msg ({ deployments } as model) =
 
                 MsgFor_EditDep msg_ ->
                     editDep msg_ model.deployments
+
+                PostedDeployment msg_ ->
+                    handlePostedDeployment msg_ model.deployments
     in
         ( { model | deployments = dModel }, cmd )
 
@@ -149,3 +152,19 @@ updateMsg updateMsg msg =
 
             EditMsgUrl str ->
                 { msgDefaults | url = str }
+
+
+handlePostedDeployment : Result Http.Error Deployment -> Model -> ( Model, Cmd Types.Msg )
+handlePostedDeployment res model =
+    case res of
+        Ok dep ->
+            -- add dep to dep list
+            let
+                m_ =
+                    { model | deployments = dep :: (.deployments model) }
+            in
+                { m_ | editingDep = blankDep } ! []
+
+        -- add err prop to errstack
+        Err e ->
+            { model | deploymentsErr = Just e } ! []

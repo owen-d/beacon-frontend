@@ -18,6 +18,9 @@ type alias ReqParams a =
     , withCredentials : Bool
     }
 
+apiUrl : String
+apiUrl =
+    "http://localhost:8080"
 
 defaultReqParams : ReqParams String
 defaultReqParams =

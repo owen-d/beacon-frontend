@@ -50,9 +50,13 @@ model =
     , deploymentsErr = Nothing
     , mdl = Material.model
     , curTab = 0
-    , editingDep = Deployment "" Nothing [] Nothing
+    , editingDep = blankDep
     }
 
+
+blankDep : Deployment
+blankDep =
+    Deployment "" Nothing [] Nothing
 
 type Msg
     = Toggle Deployment
@@ -62,3 +66,4 @@ type Msg
     | Mdl (Material.Msg Msg)
     | SelectTab Int
     | MsgFor_EditDep EditDep
+    | PostedDeployment (Result Http.Error Deployment)

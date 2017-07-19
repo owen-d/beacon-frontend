@@ -12,7 +12,7 @@ fetchDeployments : String -> Cmd Msg
 fetchDeployments jwt =
     let
         url =
-            "http://localhost:8080/deployments"
+            (++) apiUrl "/deployments"
     in
         Http.send NewDeployments
             (authReq
@@ -62,3 +62,23 @@ encodeDeployment dep =
                 |> List.take 1
     in
         Encode.object <| List.append baseAttrs optionalAttrs
+
+
+postDeployment : String -> Deployment -> Cmd Msg
+postDeployment jwt dep =
+    let
+        url =
+            (++) apiUrl "/deployments"
+
+        params =
+            { defaultReqParams | url = url }
+
+        params_ =
+            { params | method = "POST" }
+    in
+        Http.send PostedDeployment
+            (authReq
+                (Just jwt)
+                params_
+                (Decode.succeed dep)
+            )
