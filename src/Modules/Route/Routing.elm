@@ -1,7 +1,10 @@
 module Modules.Route.Routing exposing (..)
 
+import Modules.Beacons.Utils exposing (fetchBeacons)
+import Modules.Deployments.Utils exposing (fetchDeployments)
 import Modules.Route.Types exposing (..)
 import Navigation exposing (Location)
+import Types exposing (Model, Msg(..))
 import UrlParser exposing (..)
 
 
@@ -24,3 +27,18 @@ parseLocation location =
         Nothing ->
             NotFoundRoute
 
+
+routeInit : Model -> Cmd Msg
+routeInit ({route} as model) =
+    case route of
+        BeaconsRoute ->
+            fetchBeacons model.jwt |> Cmd.map BeaconsMsg
+
+        MessagesRoute ->
+            Cmd.none
+
+        DeploymentsRoute ->
+            fetchDeployments model.jwt |> Cmd.map DeploymentsMsg
+
+        NotFoundRoute ->
+            Cmd.none

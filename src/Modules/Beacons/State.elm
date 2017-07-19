@@ -1,12 +1,12 @@
 module Modules.Beacons.State exposing (..)
 
-import Types exposing (Model, Msg(BeaconsMsg))
+import Http
+import Material
+import Material.Table as Table
 import Modules.Beacons.Types as BeaconTypes exposing (..)
 import Modules.Beacons.Utils exposing (..)
-import Material.Table as Table
-import Material
 import Set exposing (Set)
-import Http
+import Types exposing (Model, Msg(BeaconsMsg))
 import Utils exposing (lift)
 
 
@@ -36,14 +36,10 @@ update msg model =
                     ( model.beacons
                     , fetchBeacons model.jwt
                         -- enclose BeaconsMsg as Msg variant BeaconsMsg (same name)
-                        |> Cmd.map (\x -> BeaconsMsg x)
+                        |> Cmd.map BeaconsMsg
                     )
     in
         ( { model | beacons = bModel }, cmd )
-
-
-
-
 
 
 toggleAll : BeaconsModel -> ( BeaconsModel, Cmd Msg )

@@ -71,7 +71,8 @@ viewDeploymentsTable prefix model =
                 (sorter dModel.deployments
                     |> List.indexedMap
                         (\idx dep ->
-                            Table.tr [ Table.selected |> when (Set.member (key dep) dModel.selected) ]
+                            Table.tr [ Table.selected |> when (Set.member (key dep) dModel.selected)
+                                     , Options.onClick (Toggle (key dep) |> DeploymentsMsg)]
                                 [ Table.td []
                                     [ Toggles.checkbox (\a -> Mdl a |> DeploymentsMsg)
                                         (List.append prefix [ idx ])

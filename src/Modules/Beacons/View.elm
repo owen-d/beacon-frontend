@@ -67,13 +67,17 @@ viewBeaconTable prefix model =
                 (sorter bModel.beacons
                     |> List.indexedMap
                         (\idx bkn ->
-                            Table.tr [ Table.selected |> when (Set.member (key bkn) bModel.selected) ]
+                            Table.tr
+                                [ Table.selected |> when (Set.member (key bkn) bModel.selected)
+                                -- little hack: must have click handler on toggle & surrounding div
+                                , Options.onClick (Toggle (key bkn) |> BeaconsMsg)
+                                ]
                                 [ Table.td []
                                     [ Toggles.checkbox (\a -> Mdl a |> BeaconsMsg)
                                         (List.append prefix [ idx ])
                                         bModel.mdl
-                                        [ Options.onToggle (Toggle (key bkn) |> BeaconsMsg)
-                                        , Toggles.value <| Set.member (key bkn) bModel.selected
+                                        [ Toggles.value <| Set.member (key bkn) bModel.selected
+                                        , Options.onToggle (Toggle (key bkn) |> BeaconsMsg)
                                         ]
                                         []
                                     ]

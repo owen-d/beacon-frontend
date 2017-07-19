@@ -119,4 +119,7 @@ stylesheet =
        your background is light. */
     color: white;
   }
+  .elm-overlay {
+    z-index : 2
+  }
 """

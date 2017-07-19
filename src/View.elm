@@ -35,5 +35,6 @@ page model =
 
         BeaconsRoute ->
             BeaconsView.view model
+
         _ ->
             DeploymentsView.view model

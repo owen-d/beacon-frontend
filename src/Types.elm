@@ -6,7 +6,7 @@ import Material
 import Modules.Beacons.Types as BeaconTypes exposing (BeaconsMsg, BeaconsModel)
 import Modules.Deployments.Types as Deployments
 import Modules.Layout.Types exposing (LayoutMsg)
-import Modules.Route.Types exposing (Route(BeaconsRoute))
+import Modules.Route.Types exposing (Route(..))
 import Navigation exposing (Location)
 
 
