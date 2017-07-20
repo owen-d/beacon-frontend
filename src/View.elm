@@ -38,7 +38,7 @@ page model =
             BeaconsView.view model
 
         _ ->
-            DeploymentsView.view model
+            BeaconsView.view model
 
 
 -- for injecting viewport meta tag via elm reactor

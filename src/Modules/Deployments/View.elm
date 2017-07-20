@@ -142,10 +142,10 @@ deploymentsTabs prefix ({ deployments } as model) =
         , Tabs.activeTab deployments.curTab
         ]
         [ Tabs.label
-            [ Options.center ]
+            [ ]
             [ text "Deployments" ]
         , Tabs.label
-            [ Options.center ]
+            [ ]
             -- for similar tab sizes
             [ Options.span [ Options.css "width" "8em" ] [ text "Edit" ] ]
         ]
@@ -156,7 +156,8 @@ deploymentsTabs prefix ({ deployments } as model) =
             _ ->
                 viewDeploymentsTable (List.append prefix [ 2 ]) model
         ]
-
+        |> \x -> Options.div [Options.css "min-height" "30rem"] [x]
+        |> (\x -> Options.div [ Options.center ] [ x ])
 
 editDeployment : List Int -> Model -> Html Types.Msg
 editDeployment prefix { editingDep, mdl } =
