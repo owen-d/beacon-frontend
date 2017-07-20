@@ -51,7 +51,7 @@ encodeDeployment dep =
     let
         baseAttrs =
             [ ( "name", Encode.string dep.name )
-            , ( "beacons", List.map Encode.string dep.beacons |> Encode.list )
+            , ( "beacon_names", List.map Encode.string dep.beacons |> Encode.list )
             ]
 
         optionalAttrs =
