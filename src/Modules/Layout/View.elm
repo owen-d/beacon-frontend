@@ -47,7 +47,10 @@ header =
 
 viewFooter : Html Msg
 viewFooter =
-    Footer.mini []
+    -- temporary hack for displaying footer @ bottom when not enough content on page
+    Footer.mini [Options.css "position" "absolute"
+                , Options.css "bottom" "0px"
+                , Options.css "width" "100%"]
         { left =
             Footer.left []
                 [ Footer.logo [] [ Footer.html <| text "Relevant links:" ]
