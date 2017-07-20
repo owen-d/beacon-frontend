@@ -1,6 +1,6 @@
 module Modules.Deployments.Utils exposing (..)
 
-import Http
+import Http exposing (jsonBody)
 import Json.Decode as Decode
 import Json.Encode as Encode
 import Modules.Deployments.Types exposing (..)
@@ -73,12 +73,15 @@ postDeployment jwt dep =
         params =
             { defaultReqParams | url = url }
 
-        params_ =
+        params_1 =
             { params | method = "POST" }
+
+        params_2 =
+            { params_1 | body = jsonBody <| encodeDeployment dep }
     in
         Http.send PostDeploymentResponse
             (authReq
                 (Just jwt)
-                params_
+                params_2
                 (Decode.succeed dep)
             )
