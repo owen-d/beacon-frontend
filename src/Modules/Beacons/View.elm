@@ -89,6 +89,8 @@ viewBeaconTable prefix model =
                         )
                 )
             ]
+            :: []
+            |> Options.div [ Options.css "min-height" "25rem" ]
 
 
 sortingHeader : BeaconsModel -> OrderField -> Html Msg
@@ -138,7 +140,6 @@ view model =
                     , ( "margin-bottom", ".6em" )
                     ]
                 ]
-            |> (\x -> Options.div [ Options.css "min-height" "30rem" ] [ x ])
             |> (\x -> Options.div [ Options.center ] [ x ])
 
 
