@@ -7,7 +7,6 @@ import Material.Layout
 import Modules.Beacons.State as BeaconState
 import Modules.Deployments.State as DeploymentState
 import Modules.Layout.State as LayoutState
-import Modules.Route.Routing exposing (parseLocation, handleRouteChange)
 import Types exposing (..)
 
 
@@ -22,9 +21,6 @@ update msg model =
 
         Mdl msg_ ->
             Material.update Mdl msg_ model
-
-        LocationChange location ->
-            handleRouteChange model (parseLocation location)
 
         LayoutMsg msg ->
             LayoutState.updateLayout msg model

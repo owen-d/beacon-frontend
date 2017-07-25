@@ -1,9 +1,10 @@
 module Modules.Route.Routing exposing (..)
 
-import Modules.Beacons.Utils exposing (fetchBeacons)
-import Modules.Deployments.Utils exposing (fetchDeployments)
+import Modules.Beacons.Types exposing (BeaconsMsg(..))
+import Modules.Deployments.Types as DepTypes exposing (Msg(..))
 import Modules.Route.Types exposing (..)
 import Navigation exposing (Location)
+import RouteUrl exposing (..)
 import Types exposing (Model, Msg(..))
 import UrlParser exposing (..)
 
@@ -18,35 +19,69 @@ matchers =
         ]
 
 
-parseLocation : Location -> Route
-parseLocation location =
-    case (parsePath matchers location) of
-        Just route ->
-            route
 
-        Nothing ->
-            NotFoundRoute
+-- routeInit returns a Msg instead of a Cmd msg, to be used with RouteUrl's location2messages signature
 
 
-routeInit : Model -> Cmd Msg
-routeInit ({ route } as model) =
+routeInit : Route -> Types.Msg
+routeInit route =
     case route of
         BeaconsRoute ->
-            fetchBeacons model.jwt |> Cmd.map BeaconsMsg
+            BeaconsMsg FetchBeacons
 
         MessagesRoute ->
-            Cmd.none
+            None
 
         DeploymentsRoute ->
-            fetchDeployments model.jwt |> Cmd.map DeploymentsMsg
+            DeploymentsMsg FetchDeployments
 
         NotFoundRoute ->
-            Cmd.none
+            None
 
-handleRouteChange : Model -> Route -> ( Model, Cmd Msg )
-handleRouteChange model newRoute =
-    let
-        model_ =
-            { model | route = newRoute }
-    in
-        ( model_, routeInit model_ )
+
+-- recieve new & old models & indicate potential url change
+-- this allows us to map state changing actions to model state, & subsequently
+-- change the url to match
+
+
+delta2url : Model -> Model -> Maybe UrlChange
+delta2url model1 model2 =
+    if model1.route /= model2.route then
+        -- gen new path component
+        { entry = RouteUrl.NewEntry
+        , url = urlOf model2
+        }
+            |> Just
+    else
+        Nothing
+
+
+
+-- receive manual url changes & return msgs associated
+
+
+location2messages : Location -> List Types.Msg
+location2messages loc =
+    case (parsePath matchers loc) of
+        Just route ->
+            routeInit route :: []
+
+        Nothing ->
+            routeInit BeaconsRoute :: []
+
+
+urlOf : Model -> String
+urlOf { route } =
+    "/"
+        ++ case route of
+            BeaconsRoute ->
+                "beacons"
+
+            MessagesRoute ->
+                "messages"
+
+            DeploymentsRoute ->
+                "campaigns"
+
+            NotFoundRoute ->
+                ""

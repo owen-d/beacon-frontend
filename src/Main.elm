@@ -2,8 +2,8 @@ module Main exposing (..)
 
 import Material
 import Material.Layout as Layout
-import Modules.Route.Routing exposing (parseLocation, handleRouteChange)
-import Navigation exposing (Location)
+import Modules.Route.Routing exposing (delta2url, location2messages)
+import RouteUrl
 import State exposing (..)
 import Types exposing (..)
 import View exposing (..)
@@ -12,20 +12,18 @@ import View exposing (..)
 -- each dir should have: utils (async, helpers), State (update fns, etc), View (rendering logic), Types (models, etc)
 
 
-main : Program Never Model Msg
+main : RouteUrl.RouteUrlProgram Never Model Msg
 main =
-    Navigation.program LocationChange
-        { init = handleRouteChange model << parseLocation
+    RouteUrl.program
+        { init = init
+        , delta2url = delta2url
+        , location2messages = location2messages
         , update = State.update
         , subscriptions = Material.subscriptions Mdl
         , view = View.view
         }
 
 
-init : Location -> ( Model, Cmd Msg )
-init loc =
-    let
-        ( mod, cmd ) =
-            handleRouteChange model <| parseLocation loc
-    in
-        ( { mod | mdl = Layout.setTabsWidth 873 mod.mdl }, Cmd.batch [ cmd, Layout.sub0 Mdl ] )
+init : ( Model, Cmd Msg )
+init =
+    ( { model | mdl = Layout.setTabsWidth 873 model.mdl }, Cmd.batch [ Layout.sub0 Mdl ] )
