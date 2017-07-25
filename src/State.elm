@@ -8,6 +8,7 @@ import Modules.Beacons.State as BeaconState
 import Modules.Deployments.State as DeploymentState
 import Modules.Layout.State as LayoutState
 import Types exposing (..)
+import Task
 
 
 -- update
@@ -18,6 +19,8 @@ update msg model =
     case msg of
         None ->
             ( model, Cmd.none )
+        Delayed msg ->
+            (model, Task.perform identity <| Task.succeed msg)
 
         Mdl msg_ ->
             Material.update Mdl msg_ model

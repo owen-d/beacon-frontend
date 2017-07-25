@@ -45,6 +45,8 @@ type
     Msg
     -- None type is defined but doesnt cause any updates. It lets us piggyback on type assertions that require `Html Msg`
     = None
+    -- Delayed type is useful for executing a delayed command via tasks.
+    | Delayed Msg
       -- material design types
     | Mdl (Material.Msg Msg)
       -- layout types

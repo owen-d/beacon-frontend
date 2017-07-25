@@ -1,7 +1,8 @@
 module Modules.Route.Routing exposing (..)
 
-import Modules.Beacons.Types exposing (BeaconsMsg(..))
-import Modules.Deployments.Types as DepTypes exposing (Msg(..))
+import Modules.Beacons.Types exposing (BeaconsMsg(FetchBeacons))
+import Modules.Layout.Types exposing (LayoutMsg(SelectTab))
+import Modules.Deployments.Types as DepTypes exposing (Msg(FetchDeployments))
 import Modules.Route.Types exposing (..)
 import Navigation exposing (Location)
 import RouteUrl exposing (..)
@@ -39,6 +40,7 @@ routeInit route =
             None
 
 
+
 -- recieve new & old models & indicate potential url change
 -- this allows us to map state changing actions to model state, & subsequently
 -- change the url to match
@@ -67,7 +69,11 @@ location2messages loc =
             routeInit route :: []
 
         Nothing ->
-            routeInit BeaconsRoute :: []
+            -- routeInit BeaconsRoute :: []
+            SelectTab BeaconsRoute
+                |> LayoutMsg
+                |> Delayed
+                |> \a -> a :: []
 
 
 urlOf : Model -> String
