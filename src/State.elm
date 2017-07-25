@@ -26,7 +26,7 @@ update msg model =
             Material.update Mdl msg_ model
 
         LayoutMsg msg ->
-            LayoutState.updateLayout msg model
+            LayoutState.updateLayout update msg model
 
         BeaconsMsg msg ->
             BeaconState.update msg model
