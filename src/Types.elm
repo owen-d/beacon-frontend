@@ -6,6 +6,7 @@ import Material
 import Modules.Beacons.Types as BeaconTypes exposing (BeaconsMsg, BeaconsModel)
 import Modules.Deployments.Types as Deployments
 import Modules.Layout.Types exposing (LayoutMsg)
+import Modules.Messages.Types as Messages
 import Modules.Route.Types exposing (Route(..))
 
 
@@ -16,6 +17,7 @@ type alias Model =
     , mdl : Material.Model
     , route : Route
     , deployments : Deployments.Model
+    , messages : Messages.Model
     }
 
 
@@ -27,8 +29,8 @@ model =
     , mdl = Material.model
     , route = NotFoundRoute
     , deployments = Deployments.model
+    , messages = Messages.model
     }
-
 
 
 type alias User =
@@ -45,7 +47,7 @@ type
     Msg
     -- None type is defined but doesnt cause any updates. It lets us piggyback on type assertions that require `Html Msg`
     = None
-    -- Delayed type is useful for executing a delayed command via tasks.
+      -- Delayed type is useful for executing a delayed command via tasks.
     | Delayed Msg
       -- material design types
     | Mdl (Material.Msg Msg)
@@ -53,3 +55,4 @@ type
     | LayoutMsg LayoutMsg
     | BeaconsMsg BeaconsMsg
     | DeploymentsMsg Deployments.Msg
+    | MessagesMsg Messages.Msg

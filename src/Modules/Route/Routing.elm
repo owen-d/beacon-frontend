@@ -1,8 +1,9 @@
 module Modules.Route.Routing exposing (..)
 
 import Modules.Beacons.Types exposing (BeaconsMsg(FetchBeacons))
-import Modules.Layout.Types exposing (LayoutMsg(SelectTab))
 import Modules.Deployments.Types as DepTypes exposing (Msg(FetchDeployments))
+import Modules.Layout.Types exposing (LayoutMsg(SelectTab))
+import Modules.Messages.Types as MsgTypes exposing (Msg(FetchMessages))
 import Modules.Route.Types exposing (..)
 import Navigation exposing (Location)
 import RouteUrl exposing (..)
@@ -31,7 +32,7 @@ routeInit route =
             BeaconsMsg FetchBeacons
 
         MessagesRoute ->
-            None
+            MessagesMsg FetchMessages
 
         DeploymentsRoute ->
             DeploymentsMsg FetchDeployments

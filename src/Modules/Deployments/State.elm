@@ -5,7 +5,9 @@ import Material
 import Material.Table as Table
 import Modules.Deployments.Types as DepTypes exposing (..)
 import Modules.Deployments.Utils exposing (..)
+import Modules.Messages.State exposing (updateMsg)
 import Modules.Messages.Types exposing (Message, EditMsg(..), createMessage)
+import Modules.Utils.View exposing (toggle)
 import Types exposing (Msg(DeploymentsMsg))
 import Utils exposing (lift)
 
@@ -89,26 +91,6 @@ rotate order =
 
 
 
-{- Toggle whether or not a set `set` contains an element `x`. -}
-
-
-toggle : comparable -> Maybe comparable -> Maybe comparable
-toggle new selected =
-    case selected of
-        Just old ->
-            -- toggle off
-            if old == new then
-                Nothing
-                -- set new dep
-            else
-                Just new
-
-        -- if none selected, set new dep
-        Nothing ->
-            Just new
-
-
-
 {- True iff all rows are currently selected. -}
 
 
@@ -134,27 +116,14 @@ editDep msg ({ editingDep } as model) =
                     { editingDep | messageName = Just str }
 
                 MsgFor_EditMsg editMsg ->
-                    { editingDep | message = Just (updateMsg editMsg editingDep.message) }
+                    -- msg could be a Nothing
+                    let
+                        msgDefaults =
+                            Maybe.withDefault createMessage editingDep.message
+                    in
+                        { editingDep | message = Just (updateMsg editMsg msgDefaults) }
     in
         { model | editingDep = updated } ! []
-
-
-updateMsg : EditMsg -> Maybe Message -> Message
-updateMsg updateMsg msg =
-    -- msg could be a Nothing
-    let
-        msgDefaults =
-            Maybe.withDefault createMessage msg
-    in
-        case updateMsg of
-            EditMsgName str ->
-                { msgDefaults | name = str }
-
-            EditMsgTitle str ->
-                { msgDefaults | title = str }
-
-            EditMsgUrl str ->
-                { msgDefaults | url = str }
 
 
 handlePostedDeployment : Result Http.Error Deployment -> Model -> ( Model, Cmd Types.Msg )

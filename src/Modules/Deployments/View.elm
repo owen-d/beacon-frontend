@@ -78,9 +78,6 @@ viewDeploymentsTable prefix model =
             ]
 
 
-isSelected : String -> Maybe String -> Bool
-isSelected id selected =
-    (==) selected <| Just id
 
 
 sortingHeader : Model -> OrderField -> Html Types.Msg

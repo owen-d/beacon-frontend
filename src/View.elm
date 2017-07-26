@@ -8,6 +8,7 @@ import Modules.Beacons.View as BeaconsView
 import Modules.Deployments.View as DeploymentsView
 import Modules.Layout.Types exposing (TabWrapper)
 import Modules.Layout.View as LayoutView
+import Modules.Messages.View as MessagesView
 import Modules.Route.Types exposing (Route(..))
 import Types exposing (..)
 
@@ -37,11 +38,17 @@ page model =
         BeaconsRoute ->
             BeaconsView.view model
 
+        MessagesRoute ->
+            MessagesView.view model
+
         _ ->
             BeaconsView.view model
 
 
+
 -- for injecting viewport meta tag via elm reactor
+
+
 addViewportMeta : (Model -> Html Msg) -> Model -> Html Msg
 addViewportMeta mapper model =
     Html.div []

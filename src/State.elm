@@ -7,8 +7,9 @@ import Material.Layout
 import Modules.Beacons.State as BeaconState
 import Modules.Deployments.State as DeploymentState
 import Modules.Layout.State as LayoutState
-import Types exposing (..)
+import Modules.Messages.State as MessagesState
 import Task
+import Types exposing (..)
 
 
 -- update
@@ -33,6 +34,10 @@ update msg model =
 
         DeploymentsMsg msg ->
             DeploymentState.update msg model
+
+        MessagesMsg msg ->
+            MessagesState.update msg model
+
 
 
 
