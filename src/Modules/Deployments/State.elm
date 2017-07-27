@@ -128,8 +128,12 @@ editDep msg ({ editingDep } as model) =
                     let
                         msgDefaults =
                             Maybe.withDefault createMessage editingDep.message
+
+                        -- since msgname takes priority on a new campaign, we unselect any msgName from the editDep model
+                        dep_1 =
+                            { editingDep | messageName = Nothing }
                     in
-                        { editingDep | message = Just (updateMsg editMsg msgDefaults) }
+                        { dep_1 | message = Just (updateMsg editMsg msgDefaults) }
     in
         { model | editingDep = updated } ! []
 
