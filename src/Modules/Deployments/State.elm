@@ -132,10 +132,13 @@ handlePostedDeployment res model =
         Ok dep ->
             -- add dep to dep list
             let
-                m_ =
+                m1 =
                     { model | deployments = dep :: (.deployments model) }
+
+                m2 =
+                    { m1 | curTab = 0 }
             in
-                { m_ | editingDep = blankDep } ! []
+                { m2 | editingDep = blankDep } ! []
 
         -- add err prop to errstack
         Err e ->
