@@ -78,8 +78,6 @@ viewDeploymentsTable prefix model =
             ]
 
 
-
-
 sortingHeader : Model -> OrderField -> Html Types.Msg
 sortingHeader model field =
     let
@@ -178,6 +176,8 @@ editDeployment prefix { editingDep, mdl } =
                 , Options.onInput rxn
                 ]
                 []
+                -- add line breaks between
+                :: [ br [] [] ]
         )
         -- TBD: add a selectbox for current msgnames w/ onInput signature (DeploymentsMsg << EditDepMsgName)
         [ ( "a name for the campaign"
@@ -197,6 +197,7 @@ editDeployment prefix { editingDep, mdl } =
           , DeploymentsMsg << MsgFor_EditDep << MsgFor_EditMsg << EditMsgUrl
           )
         ]
+        |> List.concat
         -- add button at end
         |> (\a ->
                 List.append a

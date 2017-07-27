@@ -176,6 +176,8 @@ editMessage prefix { editingMsg, mdl } =
                 , Options.onInput rxn
                 ]
                 []
+                -- add line breaks between
+                :: [ br [] [] ]
         )
         -- TBD: add a selectbox for current msgnames w/ onInput signature (MessagesMsg << EditDepMsgName)
         [ ( "Message Name"
@@ -191,6 +193,7 @@ editMessage prefix { editingMsg, mdl } =
           , MessagesMsg << MsgFor_EditMsg << EditMsgUrl
           )
         ]
+        |> List.concat
         -- add button at end
         |> (\a ->
                 List.append a
