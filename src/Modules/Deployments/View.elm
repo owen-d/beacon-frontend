@@ -327,12 +327,13 @@ deploymentCard dep =
             [ Card.title
                 [ Options.css "flex-direction" "column" ]
                 [ Card.head [] [ text "Associated beacons" ] ]
-            , Card.actions [] <|
-                List.map
-                    (\bkns ->
-                        row bkns |> br []
-                    )
-                    bknMesh
+            , (List.map
+                (\bkns ->
+                    row bkns
+                )
+                bknMesh
+              )
+                |> List.concat
+                |> List.intersperse (br [] [])
+                |> Card.actions []
             ]
-            :: []
-            |> br []

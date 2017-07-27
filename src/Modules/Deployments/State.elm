@@ -22,7 +22,7 @@ update msg ({ deployments } as model) =
 
                 -- Click on specific checkbox `idx`
                 Toggle dep ->
-                    toggleDep dep deployments
+                    toggleDep model.jwt dep deployments
 
                 Reorder field ->
                     reorder field deployments
@@ -47,17 +47,32 @@ update msg ({ deployments } as model) =
 
                 PostDeploymentResponse msg_ ->
                     handlePostedDeployment msg_ deployments
+
+                DeploymentBeaconNames msg_ ->
+                    handleDeploymentBeacons msg_ deployments
     in
         ( { model | deployments = dModel }, cmd )
 
 
-toggleDep : Deployment -> Model -> ( Model, Cmd Types.Msg )
-toggleDep dep model =
+toggleDep : String -> Deployment -> Model -> ( Model, Cmd Types.Msg )
+toggleDep jwt dep model =
     let
+        toggled =
+            toggle (key dep) model.selected
+
         m_ =
-            { model | selected = toggle (key dep) model.selected }
+            { model | selected = toggled }
+
+        cmd =
+            case toggled of
+                Just name ->
+                    fetchDeploymentBeacons jwt dep.name
+                        |> Cmd.map DeploymentsMsg
+
+                Nothing ->
+                    Cmd.none
     in
-        { m_ | editingDep = dep } ! []
+        { m_ | editingDep = dep } ! [ cmd ]
 
 
 reorder : OrderField -> Model -> ( Model, Cmd Types.Msg )
@@ -155,3 +170,25 @@ handlePostedDeployment res model =
         -- add err prop to errstack
         Err e ->
             { model | deploymentsErr = Just e } ! []
+
+
+handleDeploymentBeacons : Result Http.Error ( String, List String ) -> Model -> ( Model, Cmd Types.Msg )
+handleDeploymentBeacons res model =
+    let
+        injectBNames : String -> List String -> Deployments -> Deployments
+        injectBNames name bNames deps =
+            List.map
+                (\bkn ->
+                    if bkn.name == name then
+                        { bkn | beacons = bNames }
+                    else
+                        bkn
+                )
+                deps
+    in
+        case res of
+            Ok ( depName, bNames ) ->
+                { model | deployments = injectBNames depName bNames model.deployments } ! []
+
+            Err e ->
+                { model | deploymentsErr = Just e } ! []

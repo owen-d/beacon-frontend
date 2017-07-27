@@ -22,8 +22,28 @@ fetchDeployments jwt =
             )
 
 
+fetchDeploymentBeacons : String -> String -> Cmd Msg
+fetchDeploymentBeacons jwt name =
+    let
+        url =
+            apiUrl ++ "/deployments" ++ "/" ++ name ++ "/beacons"
+    in
+        Http.send DeploymentBeaconNames
+            (authReq
+                (Just jwt)
+                { defaultReqParams | url = url }
+                (decodeDeploymentBeacons name)
+            )
 
--- (Http.get url decodeDeployments)
+
+decodeDeploymentBeacons : String -> Decode.Decoder ( String, List String )
+decodeDeploymentBeacons name =
+    Decode.map (\a -> ( name, a ))
+        (Decode.field "beacons"
+            (Decode.list
+                (Decode.field "name" Decode.string)
+            )
+        )
 
 
 decodeDeployments : Decode.Decoder Deployments

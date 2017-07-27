@@ -71,3 +71,4 @@ type Msg
     | MsgFor_EditDep EditDep
     | PostDeployment Deployment
     | PostDeploymentResponse (Result Http.Error Deployment)
+    | DeploymentBeaconNames (Result Http.Error (String, List String))
