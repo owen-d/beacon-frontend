@@ -75,13 +75,17 @@ viewDeploymentsTable prefix model =
                                     ]
                                 , Table.td [] [ text dep.name ]
                                 , Table.td [] [ text <| Maybe.withDefault "" dep.messageName ]
-                                , if (isSelected (key dep) dModel.selected) then
-                                    deploymentCard dep
-                                  else
-                                    -- hack for lack of html.noop
-                                    Html.text ""
                                 ]
+                                :: if (isSelected (key dep) dModel.selected) then
+                                    Table.tr []
+                                        [ Table.td []
+                                            [ deploymentCard dep ]
+                                        ]
+                                        :: []
+                                   else
+                                    []
                         )
+                    |> List.concat
                 )
             ]
 
@@ -325,7 +329,7 @@ deploymentCard dep =
     in
         Card.view []
             [ Card.title
-                [ Options.css "flex-direction" "column" ]
+                []
                 [ Card.head [] [ text "Associated beacons" ] ]
             , (List.map
                 (\bkns ->
@@ -333,7 +337,7 @@ deploymentCard dep =
                 )
                 bknMesh
               )
+                |> List.intersperse [ br [] [] ]
                 |> List.concat
-                |> List.intersperse (br [] [])
                 |> Card.actions []
             ]
