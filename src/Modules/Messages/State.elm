@@ -62,10 +62,19 @@ updateMsg updateMsg msg =
 toggleMsg : Message -> MsgTypes.Model -> ( MsgTypes.Model, Cmd Types.Msg )
 toggleMsg msg model =
     let
-        m_ =
-            { model | selected = toggle (key msg) model.selected }
+        toggled =
+            toggle (key msg) model.selected
+
+        m1 =
+            { model | selected = toggled }
+
+        -- if we just untoggled, reset editing msg to empty msg
+        -- so that new msgs can be created without fields needing to be erased
     in
-        { m_ | editingMsg = msg } ! []
+        if toggled == Nothing then
+            { m1 | editingMsg = blankMsg } ! []
+        else
+            { m1 | editingMsg = msg } ! []
 
 
 reorder : OrderField -> MsgTypes.Model -> ( MsgTypes.Model, Cmd Types.Msg )
