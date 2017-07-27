@@ -73,3 +73,4 @@ type Msg
     | MsgFor_EditMsg EditMsg
     | PostMessage Message
     | PostMessageResponse (Result Http.Error Message)
+    | SelectTab Int

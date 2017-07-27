@@ -39,6 +39,9 @@ update msg ({ messages } as model) =
 
                 PostMessageResponse msg_ ->
                     handlePostedMessage msg_ messages
+
+                SelectTab idx ->
+                    selectTab idx messages
     in
         ( { model | messages = mModel }, cmd )
 
@@ -117,3 +120,8 @@ handlePostedMessage res model =
         -- add err prop to errstack
         Err e ->
             { model | httpErr = Just e } ! []
+
+
+selectTab : Int -> MsgTypes.Model -> ( MsgTypes.Model, Cmd Types.Msg )
+selectTab idx model =
+    ( { model | curTab = idx }, Cmd.none )
