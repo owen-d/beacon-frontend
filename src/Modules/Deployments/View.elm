@@ -4,6 +4,7 @@ import Html exposing (..)
 import Html.Attributes exposing (style)
 import Material.Button as Button
 import Material.Card as Card
+import Material.Chip as Chip
 import Material.List as Lists
 import Material.Options as Options exposing (nop, when)
 import Material.Table as Table
@@ -47,14 +48,17 @@ viewDeploymentsTable prefix model =
 
                 Nothing ->
                     identity
+
+        headers =
+            [ Table.th [] []
+            , sortingHeader dModel DName
+            , sortingHeader dModel DMessage
+            ]
     in
         Table.table []
             [ Table.thead []
                 [ Table.tr []
-                    [ Table.th [] []
-                    , sortingHeader dModel DName
-                    , sortingHeader dModel DMessage
-                    ]
+                    headers
                 ]
             , Table.tbody []
                 (sorter dModel.deployments
@@ -78,7 +82,7 @@ viewDeploymentsTable prefix model =
                                 ]
                                 :: if (isSelected (key dep) dModel.selected) then
                                     Table.tr []
-                                        [ Table.td []
+                                        [ Table.td [ Options.attribute <| Html.Attributes.colspan <| List.length headers ]
                                             [ deploymentCard dep ]
                                         ]
                                         :: []
@@ -319,12 +323,15 @@ deploymentCard dep =
             mesh [] dep.beacons 4
 
         cell =
-            Options.css "width" "4rem"
+            Options.css "margin" "0.75rem 0.5rem"
 
         row =
             List.map
                 (\bkn ->
-                    Options.span [ cell, Options.css "text-align" "center" ] [ text bkn ]
+                    Chip.span [ cell ]
+                        [ Chip.content []
+                            [ text <| String.right 8 bkn ]
+                        ]
                 )
     in
         Card.view []
@@ -337,7 +344,11 @@ deploymentCard dep =
                 )
                 bknMesh
               )
-                |> List.intersperse [ br [] [] ]
                 |> List.concat
-                |> Card.actions []
+                |> Options.div
+                    [ Options.css "display" "flex"
+                    , Options.css "flex-wrap" "wrap"
+                    , Options.css "flex-direction" "row"
+                    ]
+                |> (\a -> Card.actions [] [ a ])
             ]
