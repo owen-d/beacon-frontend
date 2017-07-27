@@ -18,7 +18,7 @@ import Types exposing (..)
 
 tabs : List TabWrapper
 tabs =
-    [ ( "Beacons", BeaconsRoute ), ( "Deployments", DeploymentsRoute ), ( "Messages", MessagesRoute ) ]
+    [ ( "Beacons", BeaconsRoute ), ( "Campaigns", DeploymentsRoute ), ( "Messages", MessagesRoute ) ]
 
 
 view : Model -> Html.Html Msg

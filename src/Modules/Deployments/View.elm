@@ -137,7 +137,7 @@ deploymentsTabs prefix ({ deployments } as model) =
         ]
         [ Tabs.label
             []
-            [ text "Deployments" ]
+            [ text "Campaigns" ]
         , Tabs.label
             []
             -- for similar tab sizes
@@ -180,15 +180,15 @@ editDeployment prefix { editingDep, mdl } =
                 []
         )
         -- TBD: add a selectbox for current msgnames w/ onInput signature (DeploymentsMsg << EditDepMsgName)
-        [ ( "Deployment Name"
+        [ ( "a name for the campaign"
           , editingDep.name
           , DeploymentsMsg << MsgFor_EditDep << EditDepName
           )
-        , ( "Message Name"
+        , ( "a name to remember the message"
           , Maybe.withDefault "" <| Maybe.map .name editingDep.message
           , DeploymentsMsg << MsgFor_EditDep << MsgFor_EditMsg << EditMsgName
           )
-        , ( "Title"
+        , ( "welcome message"
           , Maybe.withDefault "" <| Maybe.map .title editingDep.message
           , DeploymentsMsg << MsgFor_EditDep << MsgFor_EditMsg << EditMsgTitle
           )

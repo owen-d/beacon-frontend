@@ -105,7 +105,7 @@ sortingHeader model field =
                     "Enabled"
 
                 BDeployment ->
-                    "Current Deployment"
+                    "Current Campaign"
 
         match =
             (==) model.orderField field
@@ -153,8 +153,9 @@ beaconButtons prefix ({ beacons, selected } as model) =
         , Button.ripple
         , Options.onClick <| BeaconsMsg <| NewDeployment selected
         , Options.css "float" "right"
+        , if (Set.isEmpty selected) then Button.disabled else nop
         ]
-        [ text "configure message" ]
+        [ text "create a campaign with these beacon(s)" ]
     ]
 
 
