@@ -26,7 +26,7 @@ type OrderField
 
 type EditDep
     = EditDepName String
-    | EditDepMsgName String
+    | EditDepMsgName (Maybe String)
     | MsgFor_EditMsg EditMsg
 
 

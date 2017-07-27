@@ -261,18 +261,21 @@ viewMsgs prefix ({ deployments, messages } as model) =
 
         checkboxLi k msg =
             Lists.li []
-                [ Lists.content []
-                    [ text msg.name
-                    , Toggles.checkbox (DeploymentsMsg << Mdl)
-                        (List.append prefix [ k ])
-                        mdl
-                        [ Options.onToggle (EditDepMsgName msg.name |> MsgFor_EditDep |> DeploymentsMsg)
-                        , Toggles.ripple
-                        , Options.css "float" "right"
-                        , Toggles.value <| editingDep.messageName == (Just msg.name)
-                        ]
-                        []
+                [ Lists.content [] [ text msg.name ]
+                , Toggles.checkbox (DeploymentsMsg << Mdl)
+                    (List.append prefix [ k ])
+                    mdl
+                    [ Options.onToggle
+                        (EditDepMsgName (toggle msg.name editingDep.messageName)
+                            |> MsgFor_EditDep
+                            |> DeploymentsMsg
+                        )
+                    , Toggles.ripple
+                    , Toggles.value <| editingDep.messageName == (Just msg.name)
                     ]
+                    []
+                    :: []
+                    |> Options.div [ Options.css "float" "right" ]
                 ]
     in
         Lists.ul [] <|

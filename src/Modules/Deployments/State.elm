@@ -120,8 +120,8 @@ editDep msg ({ editingDep } as model) =
                 EditDepName str ->
                     { editingDep | name = str }
 
-                EditDepMsgName str ->
-                    { editingDep | messageName = Just str }
+                EditDepMsgName msg_ ->
+                    { editingDep | messageName = msg_ }
 
                 MsgFor_EditMsg editMsg ->
                     -- msg could be a Nothing
