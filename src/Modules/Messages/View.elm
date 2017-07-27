@@ -2,6 +2,7 @@ module Modules.Messages.View exposing (..)
 
 import Html exposing (..)
 import Html.Attributes exposing (style)
+import Material
 import Material.Button as Button
 import Material.Options as Options exposing (nop, when)
 import Material.Table as Table
@@ -143,7 +144,7 @@ messageTabs prefix ({ messages } as model) =
         ]
         [ case messages.curTab of
             1 ->
-                [ editMessage (List.append prefix [ 1, 0 ]) messages
+                [ editMessage (List.append prefix [ 1, 0 ]) (MessagesMsg << MsgFor_EditMsg) messages.editingMsg messages.mdl
                 , createMessageButton (List.append prefix [ 1, 1 ]) messages
                 ]
                     |> Options.div []
@@ -156,8 +157,8 @@ messageTabs prefix ({ messages } as model) =
                 |> (\x -> Options.div [ Options.center ] [ x ])
 
 
-editMessage : List Int -> MsgTypes.Model -> Html Types.Msg
-editMessage prefix { editingMsg, mdl } =
+editMessage : List Int -> (MsgTypes.EditMsg -> Types.Msg) -> MsgTypes.Message -> Material.Model -> Html Types.Msg
+editMessage prefix msgMapper editingMsg mdl =
     -- NOTE: textfields with the floatingLabel property require the value to be linked to the model (current fix)
     -- See: https://github.com/debois/elm-mdl/issues/278
     -- name field
@@ -183,17 +184,17 @@ editMessage prefix { editingMsg, mdl } =
                 :: [ br [] [] ]
         )
         -- TBD: add a selectbox for current msgnames w/ onInput signature (MessagesMsg << EditDepMsgName)
-        [ ( "Message Name"
+        [ ( "A name to remember the message"
           , editingMsg.name
-          , MessagesMsg << MsgFor_EditMsg << EditMsgName
+          , msgMapper << EditMsgName
           )
-        , ( "Title"
+        , ( "Welcome message"
           , editingMsg.title
-          , MessagesMsg << MsgFor_EditMsg << EditMsgTitle
+          , msgMapper << EditMsgTitle
           )
         , ( "Url"
           , editingMsg.url
-          , MessagesMsg << MsgFor_EditMsg << EditMsgUrl
+          , msgMapper << EditMsgUrl
           )
         ]
         |> List.concat

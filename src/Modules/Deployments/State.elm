@@ -22,28 +22,30 @@ update msg ({ deployments } as model) =
 
                 -- Click on specific checkbox `idx`
                 Toggle dep ->
-                    toggleDep dep model.deployments
+                    toggleDep dep deployments
 
                 Reorder field ->
-                    reorder field model.deployments
+                    reorder field deployments
 
                 NewDeployments res ->
-                    newDeployments res model.deployments
+                    newDeployments res deployments
 
                 FetchDeployments ->
-                    lift DeploymentsMsg ( model.deployments, fetchDeployments model.jwt )
+                    lift DeploymentsMsg ( deployments, fetchDeployments model.jwt )
 
                 SelectTab idx ->
-                    selectTab idx model.deployments
+                    selectTab idx deployments
+                SelectMsgTab idx ->
+                    selectMsgTab idx deployments
 
                 MsgFor_EditDep msg_ ->
-                    editDep msg_ model.deployments
+                    editDep msg_ deployments
 
                 PostDeployment dep ->
                     lift DeploymentsMsg ( deployments, postDeployment model.jwt dep )
 
                 PostDeploymentResponse msg_ ->
-                    handlePostedDeployment msg_ model.deployments
+                    handlePostedDeployment msg_ deployments
     in
         ( { model | deployments = dModel }, cmd )
 
@@ -98,6 +100,9 @@ key : Deployment -> String
 key =
     .name
 
+selectMsgTab : Int -> Model -> (Model, Cmd Types.Msg)
+selectMsgTab idx model =
+    {model | curMsgTab = idx} ! []
 
 selectTab : Int -> Model -> ( Model, Cmd Types.Msg )
 selectTab idx model =

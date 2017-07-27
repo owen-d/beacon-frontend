@@ -10,7 +10,8 @@ import Material.Textfield as Textfield
 import Material.Toggles as Toggles
 import Modules.Deployments.State exposing (..)
 import Modules.Deployments.Types as DeploymentTypes exposing (..)
-import Modules.Messages.Types exposing (EditMsg(..))
+import Modules.Messages.Types exposing (EditMsg(..), blankMsg)
+import Modules.Messages.View exposing (editMessage)
 import Modules.Utils.View exposing (..)
 import Types exposing (Msg(DeploymentsMsg))
 
@@ -154,7 +155,7 @@ deploymentsTabs prefix ({ deployments } as model) =
 
 
 editDeployment : List Int -> Model -> Html Types.Msg
-editDeployment prefix { editingDep, mdl } =
+editDeployment prefix ({ editingDep, mdl } as model) =
     -- NOTE: textfields with the floatingLabel property require the value to be linked to the model (current fix)
     -- See: https://github.com/debois/elm-mdl/issues/278
     -- name field
@@ -184,25 +185,18 @@ editDeployment prefix { editingDep, mdl } =
           , editingDep.name
           , DeploymentsMsg << MsgFor_EditDep << EditDepName
           )
-        , ( "a name to remember the message"
-          , Maybe.withDefault "" <| Maybe.map .name editingDep.message
-          , DeploymentsMsg << MsgFor_EditDep << MsgFor_EditMsg << EditMsgName
-          )
-        , ( "welcome message"
-          , Maybe.withDefault "" <| Maybe.map .title editingDep.message
-          , DeploymentsMsg << MsgFor_EditDep << MsgFor_EditMsg << EditMsgTitle
-          )
-        , ( "Url"
-          , Maybe.withDefault "" <| Maybe.map .url editingDep.message
-          , DeploymentsMsg << MsgFor_EditDep << MsgFor_EditMsg << EditMsgUrl
-          )
         ]
         |> List.concat
+        -- add tabs for using existing msg or inline msg
+        |> (\a ->
+                List.append a
+                    [ editDepMsgTabs (List.append prefix [ 1 ]) model ]
+           )
         -- add button at end
         |> (\a ->
                 List.append a
                     [ Button.render (DeploymentsMsg << Mdl)
-                        (List.append prefix [ 1 ])
+                        (List.append prefix [ 2 ])
                         model.mdl
                         [ Button.raised
                         , Button.ripple
@@ -213,3 +207,33 @@ editDeployment prefix { editingDep, mdl } =
                     ]
            )
         |> Options.div []
+
+
+editDepMsgTabs : List Int -> Model -> Html Types.Msg
+editDepMsgTabs prefix { editingDep, mdl, curMsgTab } =
+    Tabs.render (DeploymentsMsg << Mdl)
+        (List.append prefix [ 0 ])
+        mdl
+        [ Tabs.ripple
+        , Tabs.onSelectTab (DeploymentsMsg << SelectMsgTab)
+        , Tabs.activeTab curMsgTab
+        ]
+        [ Tabs.label
+            []
+            [ text "saved messages" ]
+        , Tabs.label
+            []
+            [ text "new message" ]
+        ]
+        [ case curMsgTab of
+            -- 0 ->
+            -- from saved dropdown
+            _ ->
+                editMessage (List.append prefix [ 1 ])
+                    (DeploymentsMsg << MsgFor_EditDep << MsgFor_EditMsg)
+                    (Maybe.withDefault
+                        blankMsg
+                        editingDep.message
+                    )
+                    mdl
+        ]

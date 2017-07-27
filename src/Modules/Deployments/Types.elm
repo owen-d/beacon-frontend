@@ -14,6 +14,7 @@ type alias Model =
     , deploymentsErr : Maybe Http.Error
     , mdl : Material.Model
     , curTab : Int
+    , curMsgTab : Int
     , editingDep : Deployment
     }
 
@@ -50,6 +51,7 @@ model =
     , deploymentsErr = Nothing
     , mdl = Material.model
     , curTab = 0
+    , curMsgTab = 0
     , editingDep = blankDep
     }
 
@@ -65,6 +67,7 @@ type Msg
     | FetchDeployments
     | Mdl (Material.Msg Msg)
     | SelectTab Int
+    | SelectMsgTab Int
     | MsgFor_EditDep EditDep
     | PostDeployment Deployment
     | PostDeploymentResponse (Result Http.Error Deployment)
