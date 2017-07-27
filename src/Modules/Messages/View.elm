@@ -143,7 +143,10 @@ messageTabs prefix ({ messages } as model) =
         ]
         [ case messages.curTab of
             1 ->
-                editMessage (List.append prefix [ 1 ]) messages
+                [ editMessage (List.append prefix [ 1, 0 ]) messages
+                , createMessageButton (List.append prefix [ 1, 1 ]) messages
+                ]
+                    |> Options.div []
 
             _ ->
                 viewMessagesTable (List.append prefix [ 2 ]) model
@@ -194,18 +197,20 @@ editMessage prefix { editingMsg, mdl } =
           )
         ]
         |> List.concat
-        -- add button at end
-        |> (\a ->
-                List.append a
-                    [ Button.render (MessagesMsg << Mdl)
-                        (List.append prefix [ 1 ])
-                        model.mdl
-                        [ Button.raised
-                        , Button.ripple
-                        , Options.css "float" "right"
-                        , Options.onClick <| MessagesMsg <| PostMessage editingMsg
-                        ]
-                        [ text "create message" ]
-                    ]
-           )
+        |> Options.div []
+
+
+createMessageButton : List Int -> MsgTypes.Model -> Html Types.Msg
+createMessageButton prefix ({ editingMsg, mdl } as model) =
+    -- add button at end
+    [ Button.render (MessagesMsg << Mdl)
+        (List.append prefix [ 0 ])
+        model.mdl
+        [ Button.raised
+        , Button.ripple
+        , Options.css "float" "right"
+        , Options.onClick <| MessagesMsg <| PostMessage editingMsg
+        ]
+        [ text "create message" ]
+    ]
         |> Options.div []
