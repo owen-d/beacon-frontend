@@ -3,6 +3,7 @@ module Modules.Deployments.View exposing (..)
 import Html exposing (..)
 import Html.Attributes exposing (style)
 import Material.Button as Button
+import Material.List as Lists
 import Material.Options as Options exposing (nop, when)
 import Material.Table as Table
 import Material.Tabs as Tabs
@@ -10,7 +11,7 @@ import Material.Textfield as Textfield
 import Material.Toggles as Toggles
 import Modules.Deployments.State exposing (..)
 import Modules.Deployments.Types as DeploymentTypes exposing (..)
-import Modules.Messages.Types exposing (EditMsg(..), blankMsg)
+import Modules.Messages.Types as MsgTypes exposing (EditMsg(..), blankMsg)
 import Modules.Messages.View exposing (editMessage)
 import Modules.Utils.View exposing (..)
 import Types exposing (Msg(DeploymentsMsg))
@@ -144,7 +145,7 @@ deploymentsTabs prefix ({ deployments } as model) =
         ]
         [ case deployments.curTab of
             1 ->
-                editDeployment (List.append prefix [ 1 ]) deployments
+                editDeployment (List.append prefix [ 1 ]) model
 
             _ ->
                 viewDeploymentsTable (List.append prefix [ 2 ]) model
@@ -154,8 +155,8 @@ deploymentsTabs prefix ({ deployments } as model) =
                 |> (\x -> Options.div [ Options.center ] [ x ])
 
 
-editDeployment : List Int -> Model -> Html Types.Msg
-editDeployment prefix ({ editingDep, mdl } as model) =
+editDeployment : List Int -> Types.Model -> Html Types.Msg
+editDeployment prefix rootModel =
     -- NOTE: textfields with the floatingLabel property require the value to be linked to the model (current fix)
     -- See: https://github.com/debois/elm-mdl/issues/278
     -- name field
@@ -164,76 +165,119 @@ editDeployment prefix ({ editingDep, mdl } as model) =
     -- message value field
     -- url field
     -- lang field
-    List.indexedMap
-        (\idx ( label, val, rxn ) ->
-            Textfield.render (DeploymentsMsg << Mdl)
-                -- use prefix + 0 as base for each textfield component
-                (List.append prefix [ 0, idx ])
-                mdl
-                [ Textfield.label label
-                , Textfield.floatingLabel
-                , Textfield.text_
-                , Textfield.value val
-                , Options.onInput rxn
-                ]
-                []
-                -- add line breaks between
-                :: [ br [] [] ]
-        )
-        -- TBD: add a selectbox for current msgnames w/ onInput signature (DeploymentsMsg << EditDepMsgName)
-        [ ( "a name for the campaign"
-          , editingDep.name
-          , DeploymentsMsg << MsgFor_EditDep << EditDepName
-          )
-        ]
-        |> List.concat
-        -- add tabs for using existing msg or inline msg
-        |> (\a ->
-                List.append a
-                    [ editDepMsgTabs (List.append prefix [ 1 ]) model ]
-           )
-        -- add button at end
-        |> (\a ->
-                List.append a
-                    [ Button.render (DeploymentsMsg << Mdl)
-                        (List.append prefix [ 2 ])
-                        model.mdl
-                        [ Button.raised
-                        , Button.ripple
-                        , Options.css "float" "right"
-                        , Options.onClick <| DeploymentsMsg <| PostDeployment editingDep
-                        ]
-                        [ text "create campaign" ]
-                    ]
-           )
-        |> Options.div []
-
-
-editDepMsgTabs : List Int -> Model -> Html Types.Msg
-editDepMsgTabs prefix { editingDep, mdl, curMsgTab } =
-    Tabs.render (DeploymentsMsg << Mdl)
-        (List.append prefix [ 0 ])
-        mdl
-        [ Tabs.ripple
-        , Tabs.onSelectTab (DeploymentsMsg << SelectMsgTab)
-        , Tabs.activeTab curMsgTab
-        ]
-        [ Tabs.label
-            []
-            [ text "saved messages" ]
-        , Tabs.label
-            []
-            [ text "new message" ]
-        ]
-        [ case curMsgTab of
-            -- 0 ->
-            -- from saved dropdown
-            _ ->
-                editMessage (List.append prefix [ 1 ])
-                    (DeploymentsMsg << MsgFor_EditDep << MsgFor_EditMsg)
-                    (Maybe.withDefault
-                        blankMsg
-                        editingDep.message
-                    )
+    let
+        ({ editingDep, mdl } as model) =
+            rootModel.deployments
+    in
+        List.indexedMap
+            (\idx ( label, val, rxn ) ->
+                Textfield.render (DeploymentsMsg << Mdl)
+                    -- use prefix + 0 as base for each textfield component
+                    (List.append prefix [ 0, idx ])
                     mdl
-        ]
+                    [ Textfield.label label
+                    , Textfield.floatingLabel
+                    , Textfield.text_
+                    , Textfield.value val
+                    , Options.onInput rxn
+                    ]
+                    []
+                    -- add line breaks between
+                    :: [ br [] [] ]
+            )
+            -- TBD: add a selectbox for current msgnames w/ onInput signature (DeploymentsMsg << EditDepMsgName)
+            [ ( "a name for the campaign"
+              , editingDep.name
+              , DeploymentsMsg << MsgFor_EditDep << EditDepName
+              )
+            ]
+            |> List.concat
+            -- add tabs for using existing msg or inline msg
+            |> (\a ->
+                    List.append a
+                        [ editDepMsgTabs (List.append prefix [ 1 ]) rootModel ]
+               )
+            -- add button at end
+            |> (\a ->
+                    List.append a
+                        [ Button.render (DeploymentsMsg << Mdl)
+                            (List.append prefix [ 2 ])
+                            model.mdl
+                            [ Button.raised
+                            , Button.ripple
+                            , Options.css "float" "right"
+                            , Options.onClick <| DeploymentsMsg <| PostDeployment editingDep
+                            ]
+                            [ text "create campaign" ]
+                        ]
+               )
+            |> Options.div []
+
+
+editDepMsgTabs : List Int -> Types.Model -> Html Types.Msg
+editDepMsgTabs prefix model =
+    let
+        { editingDep, mdl, curMsgTab } =
+            model.deployments
+    in
+        Tabs.render (DeploymentsMsg << Mdl)
+            (List.append prefix [ 0 ])
+            mdl
+            [ Tabs.ripple
+            , Tabs.onSelectTab (DeploymentsMsg << SelectMsgTab)
+            , Tabs.activeTab curMsgTab
+            ]
+            [ Tabs.label
+                []
+                [ text "saved messages" ]
+            , Tabs.label
+                []
+                [ text "new message" ]
+            ]
+            [ let
+                newPrefix =
+                    (List.append prefix [ 1 ])
+              in
+                case curMsgTab of
+                    0 ->
+                        viewMsgs newPrefix model
+
+                    _ ->
+                        editMessage newPrefix
+                            (DeploymentsMsg << MsgFor_EditDep << MsgFor_EditMsg)
+                            (Maybe.withDefault
+                                blankMsg
+                                editingDep.message
+                            )
+                            mdl
+            ]
+
+
+viewMsgs : List Int -> Types.Model -> Html Types.Msg
+viewMsgs prefix ({ deployments, messages } as model) =
+    let
+        { editingDep, mdl } =
+            deployments
+
+        checkboxLi k msg =
+            Lists.li []
+                [ Lists.content []
+                    [ text msg.name
+                    , Toggles.checkbox (DeploymentsMsg << Mdl)
+                        (List.append prefix [ k ])
+                        mdl
+                        [ Options.onToggle (EditDepMsgName msg.name |> MsgFor_EditDep |> DeploymentsMsg)
+                        , Toggles.ripple
+                        , Options.css "float" "right"
+                        , Toggles.value <| editingDep.messageName == (Just msg.name)
+                        ]
+                        []
+                    ]
+                ]
+    in
+        Lists.ul [] <|
+            List.indexedMap
+                (\idx msg ->
+                    checkboxLi idx msg
+                )
+                messages.messages

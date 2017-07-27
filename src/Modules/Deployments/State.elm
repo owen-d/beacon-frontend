@@ -35,6 +35,7 @@ update msg ({ deployments } as model) =
 
                 SelectTab idx ->
                     selectTab idx deployments
+
                 SelectMsgTab idx ->
                     selectMsgTab idx deployments
 
@@ -100,9 +101,11 @@ key : Deployment -> String
 key =
     .name
 
-selectMsgTab : Int -> Model -> (Model, Cmd Types.Msg)
+
+selectMsgTab : Int -> Model -> ( Model, Cmd Types.Msg )
 selectMsgTab idx model =
-    {model | curMsgTab = idx} ! []
+    { model | curMsgTab = idx } ! []
+
 
 selectTab : Int -> Model -> ( Model, Cmd Types.Msg )
 selectTab idx model =
