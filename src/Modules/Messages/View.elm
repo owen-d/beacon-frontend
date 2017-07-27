@@ -140,7 +140,7 @@ messageTabs prefix ({ messages } as model) =
         , Tabs.label
             []
             -- for similar tab sizes
-            [ Options.span [ Options.css "width" "8em" ] [ text "Edit" ] ]
+            [ Options.span [ Options.css "width" "8em" ] [ text "New Message" ] ]
         ]
         [ case messages.curTab of
             1 ->

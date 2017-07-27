@@ -3,6 +3,7 @@ module Modules.Deployments.View exposing (..)
 import Html exposing (..)
 import Html.Attributes exposing (style)
 import Material.Button as Button
+import Material.Card as Card
 import Material.List as Lists
 import Material.Options as Options exposing (nop, when)
 import Material.Table as Table
@@ -74,6 +75,11 @@ viewDeploymentsTable prefix model =
                                     ]
                                 , Table.td [] [ text dep.name ]
                                 , Table.td [] [ text <| Maybe.withDefault "" dep.messageName ]
+                                , if (isSelected (key dep) dModel.selected) then
+                                    deploymentCard dep
+                                  else
+                                    -- hack for lack of html.noop
+                                    Html.text ""
                                 ]
                         )
                 )
@@ -287,3 +293,46 @@ viewMsgs prefix ({ deployments, messages } as model) =
                     checkboxLi idx msg
                 )
                 messages.messages
+
+
+deploymentCard : Deployment -> Html msg
+deploymentCard dep =
+    let
+        mesh : List (List String) -> List String -> Int -> List (List String)
+        mesh accum col chunksize =
+            if (List.isEmpty col) then
+                accum
+            else
+                mesh
+                    (List.append accum <|
+                        List.take chunksize col
+                            :: []
+                    )
+                    (List.drop chunksize col)
+                    chunksize
+
+        bknMesh =
+            mesh [] dep.beacons 4
+
+        cell =
+            Options.css "width" "4rem"
+
+        row =
+            List.map
+                (\bkn ->
+                    Options.span [ cell, Options.css "text-align" "center" ] [ text bkn ]
+                )
+    in
+        Card.view []
+            [ Card.title
+                [ Options.css "flex-direction" "column" ]
+                [ Card.head [] [ text "Associated beacons" ] ]
+            , Card.actions [] <|
+                List.map
+                    (\bkns ->
+                        row bkns |> br []
+                    )
+                    bknMesh
+            ]
+            :: []
+            |> br []
