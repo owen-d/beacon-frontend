@@ -1,0 +1,23 @@
+{
+  "name": "beacon-frontend",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "git@github.com:owen-d/beacon-frontend.git",
+  "author": "owen <ow.diehl@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "build": "webpack",
+    "client": "webpack-dev-server --port 3000",
+    "start": "nf start"
+  },
+  "dependencies": {
+    "css-loader": "^0.28.4",
+    "elm-webpack-loader": "^4.3.1",
+    "file-loader": "^0.11.2",
+    "foreman": "^2.0.0",
+    "style-loader": "^0.18.2",
+    "url-loader": "^0.5.9",
+    "webpack": "^3.4.1",
+    "webpack-dev-server": "^2.6.1"
+  }
+}
