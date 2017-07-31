@@ -9,5 +9,8 @@ node_modules
 #yarn
 yarn-error.log
 
+#compiled
+dist
+
 #emacs
 *.#*

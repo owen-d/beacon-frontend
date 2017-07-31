@@ -109,9 +109,6 @@ if (isProd === true) {
                 allChunks: true,
             }),
             new CopyWebpackPlugin([{
-                from: 'src/static/img/',
-                to: 'static/img/'
-            }, {
                 from: 'src/favicon.ico'
             }]),
 
