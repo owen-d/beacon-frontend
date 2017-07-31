@@ -6,7 +6,6 @@ import Material.Color as Color
 import Material.Footer as Footer
 import Material.Layout as Layout
 import Material.Options as Options exposing (css)
-import Material.Scheme
 import Modules.Layout.Types exposing (LayoutMsg(SelectTab), TabWrapper)
 import Modules.Route.Types exposing (Route(BeaconsRoute))
 import Types exposing (Model, Msg(Mdl, LayoutMsg, None))
@@ -14,23 +13,22 @@ import Types exposing (Model, Msg(Mdl, LayoutMsg, None))
 
 view : (Model -> Html Msg) -> List TabWrapper -> Model -> Html Msg
 view viewFn tabs model =
-    Material.Scheme.topWithScheme Color.BlueGrey Color.Pink <|
-        Layout.render Mdl
-            model.mdl
-            [ Layout.fixedHeader
-            , Layout.selectedTab <| selectedTab model.route tabs
-            , Layout.onSelectTab <| selectTab tabs
-            , Layout.transparentHeader
+    Layout.render Mdl
+        model.mdl
+        [ Layout.fixedHeader
+        , Layout.selectedTab <| selectedTab model.route tabs
+        , Layout.onSelectTab <| selectTab tabs
+        , Layout.transparentHeader
+        ]
+        { header = header
+        , drawer = []
+        , tabs = ( List.map (\( name, _ ) -> text name) tabs, [] )
+        , main =
+            [ stylesheet
+            , viewFn model
+            , viewFooter
             ]
-            { header = header
-            , drawer = []
-            , tabs = ( List.map (\( name, _ ) -> text name) tabs, [] )
-            , main =
-                [ stylesheet
-                , viewFn model
-                , viewFooter
-                ]
-            }
+        }
 
 
 header : List (Html Msg)

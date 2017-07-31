@@ -1,23 +1,35 @@
 {
   "name": "beacon-frontend",
+  "description": "beacon cli",
   "version": "1.0.0",
-  "main": "index.js",
-  "repository": "git@github.com:owen-d/beacon-frontend.git",
-  "author": "owen <ow.diehl@gmail.com>",
   "license": "MIT",
+  "author": "Owen Diehl",
+  "repository": "git@github.com:owen-d/beacon-frontend.git",
   "scripts": {
+    "start": "webpack-dev-server --hot --inline",
+    "prebuild": "rimraf dist",
     "build": "webpack",
-    "client": "webpack-dev-server --port 3000",
-    "start": "nf start"
+    "reinstall": "rm -r node_modules && yarn global remove elm && yarn global add elm && yarn install && elm package install"
   },
-  "dependencies": {
-    "css-loader": "^0.28.4",
-    "elm-webpack-loader": "^4.3.1",
-    "file-loader": "^0.11.2",
-    "foreman": "^2.0.0",
-    "style-loader": "^0.18.2",
-    "url-loader": "^0.5.9",
-    "webpack": "^3.4.1",
-    "webpack-dev-server": "^2.6.1"
-  }
+  "devDependencies": {
+    "autoprefixer": "^6.7.7",
+    "bootstrap-sass": "^3.3.7",
+    "copy-webpack-plugin": "^4.0.1",
+    "css-loader": "^0.27.3",
+    "elm-webpack-loader": "^4.3.0",
+    "extract-text-webpack-plugin": "^2.1.0",
+    "file-loader": "^0.10.1",
+    "html-webpack-plugin": "^2.28.0",
+    "jquery": "^3.2.1",
+    "node-sass": "^4.5.1",
+    "postcss-loader": "^1.3.3",
+    "sass-loader": "^6.0.3",
+    "style-loader": "^0.16.0",
+    "url-loader": "^0.5.8",
+    "webpack": "^2.3.1",
+    "webpack-dev-server": "^2.4.2",
+    "webpack-merge": "^4.1.0"
+  },
+  "main": "index.js",
+  "dependencies": {}
 }

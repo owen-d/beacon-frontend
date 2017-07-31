@@ -6,9 +6,8 @@ repl-temp-*
 # node modules
 node_modules
 
-#compiled files
-elm.js
-index.html
+#yarn
+yarn-error.log
 
 #emacs
 *.#*
