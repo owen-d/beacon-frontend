@@ -6,10 +6,10 @@
   "author": "Owen Diehl",
   "repository": "git@github.com:owen-d/beacon-frontend.git",
   "scripts": {
-    "start": "webpack-dev-server --hot --inline",
-    "prebuild": "rm -r dist",
+    "start": "webpack-dev-server --hot --inline --port=8000",
+    "prebuild": "rm -r dist || :",
     "build": "webpack",
-    "reinstall": "rm -r node_modules && yarn global remove elm && yarn global add elm && yarn install && elm package install"
+    "reinstall": "rm -r node_modules || : && yarn global remove elm || : && yarn global add elm && yarn install && elm package install"
   },
   "devDependencies": {
     "autoprefixer": "^6.7.7",
