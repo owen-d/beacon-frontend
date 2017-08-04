@@ -75,7 +75,7 @@ encodeDeployment dep =
             ]
 
         optionalAttrs =
-            [ ( "messageName", Maybe.map Encode.string dep.messageName )
+            [ ( "message_name", Maybe.map Encode.string dep.messageName )
             , ( "message", Maybe.map encodeMessage dep.message )
             ]
                 |> maybeDecode
