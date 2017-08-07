@@ -7,7 +7,7 @@
   "repository": "git@github.com:owen-d/beacon-frontend.git",
   "scripts": {
     "start": "webpack-dev-server --hot --inline --port=8000",
-    "prebuild": "rm -r dist || :",
+    "prebuild": "rm -r docker/dist || :",
     "build": "webpack",
     "reinstall": "rm -r node_modules || : && yarn global remove elm || : && yarn global add elm && yarn install && elm package install"
   },
