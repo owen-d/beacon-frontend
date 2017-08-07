@@ -20,7 +20,7 @@ type alias ReqParams a =
 
 apiUrl : String
 apiUrl =
-    "http://localhost:8080"
+    "https://api.sharecro.ws/v1"
 
 defaultReqParams : ReqParams String
 defaultReqParams =

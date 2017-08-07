@@ -9,7 +9,7 @@ fetchBeacons : String -> Cmd BeaconsMsg
 fetchBeacons jwt =
     let
         url =
-            "http://localhost:8080/beacons"
+            (++) apiUrl "/beacons"
     in
         Http.send NewBeacons
             (authReq
