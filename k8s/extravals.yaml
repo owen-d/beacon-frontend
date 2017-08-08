@@ -1,0 +1,31 @@
+resources:
+  limits:
+   cpu: 50m
+   memory: 128Mi
+  requests:
+   cpu: 10m
+   memory: 128Mi
+
+
+## current b/c rate limit from letsencrypt:
+ingress:
+  enabled: true
+  hosts:
+    - echo.sharecro.ws
+## should be
+  # hosts:
+  #   - echo.sharecro.ws
+  #   - sharecro.ws
+  #   - my.sharecro.ws
+  tls:
+    - hosts:
+      - echo.sharecro.ws
+      secretName: test-tls-secret
+
+  ## should be:
+  # tls:
+  #   # Secrets must be manually created in the namespace.
+  #   - hosts:
+  #     - sharecro.ws
+  #     - my.sharecro.ws
+  #     secretName: sharecrows-elm-tls

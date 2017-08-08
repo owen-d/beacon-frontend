@@ -12,19 +12,11 @@ service:
   externalPort: 80
   internalPort: 80
 ingress:
-  enabled: true
-    hosts:
-      - sharecro.ws
-      - my.sharecro.ws
+  enabled: false
   annotations:
     kubernetes.io/ingress.class: "gce"
     kubernetes.io/tls-acme: "true"
-  tls:
-    # Secrets must be manually created in the namespace.
-    secretName: sharecrows-elm-tls
-    hosts:
-      - sharecro.ws
-      - my.sharecro.ws
+
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious 
