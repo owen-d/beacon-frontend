@@ -4,7 +4,6 @@
 replicaCount: 2
 image:
   repository: gcr.io/glassy-courage-146901/sharecrows-elm
-  tag: 7d214b46aae6
   pullPolicy: IfNotPresent
 service:
   name: sharecrows-elm
