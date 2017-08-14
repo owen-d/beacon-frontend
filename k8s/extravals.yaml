@@ -13,22 +13,15 @@ resources:
 ## current b/c rate limit from letsencrypt:
 ingress:
   enabled: true
+  annotations:
+    kubernetes.io/ingress.global-static-ip-name: frontend-sharecrows
   hosts:
-    - echo.sharecro.ws
-## should be
-  # hosts:
-  #   - echo.sharecro.ws
-  #   - sharecro.ws
-  #   - my.sharecro.ws
+    - my.sharecro.ws
+    - sharecro.ws
+    # - sharecrows.com
+    # - my.sharecrows.com
   tls:
     - hosts:
-      - echo.sharecro.ws
-      secretName: test-tls-secret
-
-  ## should be:
-  # tls:
-  #   # Secrets must be manually created in the namespace.
-  #   - hosts:
-  #     - sharecro.ws
-  #     - my.sharecro.ws
-  #     secretName: sharecrows-elm-tls
+        - sharecro.ws
+        - my.sharecro.ws
+      secretName: sharecrows-frontend-tls-stage
