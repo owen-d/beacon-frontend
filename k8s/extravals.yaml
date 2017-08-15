@@ -24,4 +24,4 @@ ingress:
     - hosts:
         - sharecro.ws
         - my.sharecro.ws
-      secretName: sharecrows-frontend-tls-stage
+      secretName: sharecrows-frontend-tls
