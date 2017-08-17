@@ -18,6 +18,7 @@ matchers =
         , map BeaconsRoute (s "beacons")
         , map MessagesRoute (s "messages")
         , map DeploymentsRoute (s "deployments")
+        , map SigninRoute (s "signin")
         ]
 
 
@@ -37,6 +38,8 @@ routeInit route =
         DeploymentsRoute ->
             DeploymentsMsg FetchDeployments
 
+        SigninRoute ->
+            None
         NotFoundRoute ->
             None
 
@@ -92,3 +95,6 @@ urlOf { route } =
 
             NotFoundRoute ->
                 ""
+
+            SigninRoute ->
+                "signin"

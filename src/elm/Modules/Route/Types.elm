@@ -6,3 +6,4 @@ type Route
     | MessagesRoute
     | DeploymentsRoute
     | NotFoundRoute
+    | SigninRoute

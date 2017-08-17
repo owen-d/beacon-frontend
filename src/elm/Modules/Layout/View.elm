@@ -2,7 +2,6 @@ module Modules.Layout.View exposing (..)
 
 import Array
 import Html exposing (..)
-import Material.Color as Color
 import Material.Footer as Footer
 import Material.Layout as Layout
 import Material.Options as Options exposing (css)
