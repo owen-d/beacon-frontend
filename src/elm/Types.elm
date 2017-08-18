@@ -13,7 +13,7 @@ import Modules.Route.Types exposing (Route(..))
 type alias Model =
     { user : Maybe User
     , beacons : BeaconsModel
-    , jwt : String
+    , jwt : Maybe String
     , mdl : Material.Model
     , route : Route
     , deployments : Deployments.Model
@@ -25,7 +25,7 @@ model : Model
 model =
     { user = Nothing
     , beacons = BeaconTypes.model
-    , jwt = ""
+    , jwt = Nothing
     , mdl = Material.model
     , route = NotFoundRoute
     , deployments = Deployments.model

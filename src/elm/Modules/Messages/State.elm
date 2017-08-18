@@ -7,43 +7,53 @@ import Modules.Messages.Types as MsgTypes exposing (..)
 import Modules.Messages.Utils exposing (..)
 import Modules.Utils.View exposing (toggle)
 import Types exposing (Msg(MessagesMsg), Model)
-import Utils exposing (lift)
+import Utils exposing (lift, isLoggedIn)
 
 
 update : MsgTypes.Msg -> Types.Model -> ( Types.Model, Cmd Types.Msg )
 update msg ({ messages } as model) =
     let
-        ( mModel, cmd ) =
-            case msg of
-                Mdl msg_ ->
-                    lift MessagesMsg (Material.update Mdl msg_ messages)
-
-                -- Click on specific checkbox `idx`
-                Toggle msg_ ->
-                    toggleMsg msg_ messages
-
-                Reorder field ->
-                    reorder field messages
-
-                NewMessages res ->
-                    newMessages res messages
-
-                FetchMessages ->
-                    lift MessagesMsg ( messages, fetchMessages model.jwt )
-
-                MsgFor_EditMsg msg_ ->
-                    { messages | editingMsg = updateMsg msg_ messages.editingMsg } ! []
-
-                PostMessage msg_ ->
-                    lift MessagesMsg ( messages, postMessage model.jwt msg_ )
-
-                PostMessageResponse msg_ ->
-                    handlePostedMessage msg_ messages
-
-                SelectTab idx ->
-                    selectTab idx messages
+        mapMessageModel : (MsgTypes.Model, Cmd Types.Msg) -> (Types.Model, Cmd Types.Msg)
+        mapMessageModel (msgMod, cmd) =
+            ({ model | messages = msgMod }, cmd)
     in
-        ( { model | messages = mModel }, cmd )
+        case msg of
+            Mdl msg_ ->
+                lift MessagesMsg (Material.update Mdl msg_ messages)
+                    |> mapMessageModel
+
+            -- Click on specific checkbox `idx`
+            Toggle msg_ ->
+                toggleMsg msg_ messages
+                    |> mapMessageModel
+
+            Reorder field ->
+                reorder field messages
+                    |> mapMessageModel
+
+            NewMessages res ->
+                newMessages res messages
+                    |> mapMessageModel
+
+            FetchMessages ->
+                isLoggedIn model <|
+                    \jwt -> lift MessagesMsg ( model, fetchMessages jwt )
+
+            MsgFor_EditMsg msg_ ->
+                { messages | editingMsg = updateMsg msg_ messages.editingMsg } ! []
+                    |> mapMessageModel
+
+            PostMessage msg_ ->
+                isLoggedIn model <|
+                    \jwt -> lift MessagesMsg ( model, postMessage jwt msg_ )
+
+            PostMessageResponse msg_ ->
+                handlePostedMessage msg_ messages
+                    |> mapMessageModel
+
+            SelectTab idx ->
+                selectTab idx messages
+                    |> mapMessageModel
 
 
 updateMsg : EditMsg -> Message -> Message

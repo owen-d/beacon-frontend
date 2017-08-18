@@ -5,7 +5,9 @@ module Utils exposing (..)
 import Http
 import Json.Decode as Decode
 import Json.Encode as Encode
+import Modules.Route.Types exposing (Route(SigninRoute))
 import Time
+import Types
 
 
 type alias ReqParams a =
@@ -18,9 +20,11 @@ type alias ReqParams a =
     , withCredentials : Bool
     }
 
+
 apiUrl : String
 apiUrl =
     "https://api.sharecro.ws/v1"
+
 
 defaultReqParams : ReqParams String
 defaultReqParams =
@@ -34,7 +38,10 @@ defaultReqParams =
     }
 
 
+
 -- authReq should require a jwt, handling its existence should happen before it gets here
+
+
 authReq :
     String
     -> ReqParams a
@@ -73,3 +80,17 @@ maybeDecode col =
                     Nothing ->
                         Nothing
             )
+
+
+
+-- isLoggedIn will redirect to signin page if no jwt present, otherwise it will lazily delegate to another update
+
+
+isLoggedIn : Types.Model -> (String -> ( Types.Model, Cmd Types.Msg )) -> ( Types.Model, Cmd Types.Msg )
+isLoggedIn model passthrough =
+    case model.jwt of
+        Nothing ->
+            { model | route = SigninRoute } ! []
+
+        Just jwt ->
+            passthrough jwt
