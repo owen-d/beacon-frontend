@@ -44,5 +44,7 @@ page model =
             MessagesRoute ->
                 MessagesView.view model
 
+            SigninRoute ->
+                SigninView.view model
             _ ->
                 BeaconsView.view model

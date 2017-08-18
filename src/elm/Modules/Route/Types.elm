@@ -7,3 +7,4 @@ type Route
     | DeploymentsRoute
     | NotFoundRoute
     | SigninRoute
+    | GoogleAuthorizeRoute (Maybe String) (Maybe String)

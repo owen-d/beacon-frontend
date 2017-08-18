@@ -9,6 +9,7 @@ import Modules.Deployments.State as DeploymentState
 import Modules.Layout.State as LayoutState
 import Modules.Messages.State as MessagesState
 import Modules.Route.Types exposing (Route(..))
+import Modules.Signin.State as SigninState
 import Task
 import Types exposing (..)
 
@@ -43,6 +44,8 @@ update msg model =
         Unauthenticated ->
             { model | route = SigninRoute } ! []
 
+        MsgFor_SigninMsg msg ->
+            SigninState.update msg model
 
 
 -- subscriptions

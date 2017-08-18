@@ -8,6 +8,7 @@ import Modules.Deployments.Types as Deployments
 import Modules.Layout.Types exposing (LayoutMsg)
 import Modules.Messages.Types as Messages
 import Modules.Route.Types exposing (Route(..))
+import Modules.Signin.Types as SigninTypes exposing (SigninMsg, SigninModel)
 
 
 type alias Model =
@@ -18,6 +19,7 @@ type alias Model =
     , route : Route
     , deployments : Deployments.Model
     , messages : Messages.Model
+    , signin : SigninModel
     }
 
 
@@ -30,6 +32,7 @@ model =
     , route = NotFoundRoute
     , deployments = Deployments.model
     , messages = Messages.model
+    , signin = SigninTypes.model
     }
 
 
@@ -57,3 +60,4 @@ type
     | DeploymentsMsg Deployments.Msg
     | MessagesMsg Messages.Msg
     | Unauthenticated
+    | MsgFor_SigninMsg SigninMsg

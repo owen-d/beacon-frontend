@@ -19,6 +19,11 @@ matchers =
         , map MessagesRoute (s "messages")
         , map DeploymentsRoute (s "deployments")
         , map SigninRoute (s "signin")
+        , map GoogleAuthorizeRoute <|
+            s "signin"
+                </> s "oauth"
+                <?> stringParam "state"
+                <?> stringParam "code"
         ]
 
 
@@ -40,6 +45,10 @@ routeInit route =
 
         SigninRoute ->
             None
+
+        GoogleAuthorizeRoute state code ->
+            None
+
         NotFoundRoute ->
             None
 
@@ -98,3 +107,6 @@ urlOf { route } =
 
             SigninRoute ->
                 "signin"
+
+            GoogleAuthorizeRoute state code ->
+                "/signin/google"
