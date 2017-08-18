@@ -9,49 +9,61 @@ import Modules.Messages.State exposing (updateMsg)
 import Modules.Messages.Types exposing (Message, EditMsg(..), createMessage)
 import Modules.Utils.View exposing (toggle)
 import Types exposing (Msg(DeploymentsMsg))
-import Utils exposing (lift)
+import Utils exposing (lift, isLoggedIn)
 
 
 update : DepTypes.Msg -> Types.Model -> ( Types.Model, Cmd Types.Msg )
 update msg ({ deployments } as model) =
     let
-        ( dModel, cmd ) =
-            case msg of
-                Mdl msg_ ->
-                    lift DeploymentsMsg (Material.update Mdl msg_ model.deployments)
-
-                -- Click on specific checkbox `idx`
-                Toggle dep ->
-                    toggleDep model.jwt dep deployments
-
-                Reorder field ->
-                    reorder field deployments
-
-                NewDeployments res ->
-                    newDeployments res deployments
-
-                FetchDeployments ->
-                    lift DeploymentsMsg ( deployments, fetchDeployments model.jwt )
-
-                SelectTab idx ->
-                    selectTab idx deployments
-
-                SelectMsgTab idx ->
-                    selectMsgTab idx deployments
-
-                MsgFor_EditDep msg_ ->
-                    editDep msg_ deployments
-
-                PostDeployment dep ->
-                    lift DeploymentsMsg ( deployments, postDeployment model.jwt dep )
-
-                PostDeploymentResponse msg_ ->
-                    handlePostedDeployment msg_ deployments
-
-                DeploymentBeaconNames msg_ ->
-                    handleDeploymentBeacons msg_ deployments
+        mapDepModel : ( DepTypes.Model, Cmd Types.Msg ) -> ( Types.Model, Cmd Types.Msg )
+        mapDepModel ( depMod, cmd ) =
+            ( { model | deployments = depMod }, cmd )
     in
-        ( { model | deployments = dModel }, cmd )
+        case msg of
+            Mdl msg_ ->
+                lift DeploymentsMsg (Material.update Mdl msg_ model.deployments)
+                    |> mapDepModel
+
+            -- Click on specific checkbox `idx`
+            Toggle dep ->
+                isLoggedIn model <|
+                    \jwt -> mapDepModel <| toggleDep jwt dep deployments
+
+            Reorder field ->
+                reorder field deployments
+                    |> mapDepModel
+
+            NewDeployments res ->
+                newDeployments res deployments
+                    |> mapDepModel
+
+            FetchDeployments ->
+                isLoggedIn model <|
+                \jwt -> lift DeploymentsMsg ( model, fetchDeployments jwt )
+
+            SelectTab idx ->
+                selectTab idx deployments
+                    |> mapDepModel
+
+            SelectMsgTab idx ->
+                selectMsgTab idx deployments
+                    |> mapDepModel
+
+            MsgFor_EditDep msg_ ->
+                editDep msg_ deployments
+                    |> mapDepModel
+
+            PostDeployment dep ->
+                isLoggedIn model <|
+                \jwt -> lift DeploymentsMsg ( model, postDeployment jwt dep )
+
+            PostDeploymentResponse msg_ ->
+                handlePostedDeployment msg_ deployments
+                    |> mapDepModel
+
+            DeploymentBeaconNames msg_ ->
+                handleDeploymentBeacons msg_ deployments
+                    |> mapDepModel
 
 
 toggleDep : String -> Deployment -> Model -> ( Model, Cmd Types.Msg )

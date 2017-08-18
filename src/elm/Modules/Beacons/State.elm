@@ -8,6 +8,7 @@ import Modules.Beacons.Utils exposing (..)
 import Modules.Route.Types exposing (Route(..))
 import Set exposing (Set)
 import Types exposing (Model, Msg(BeaconsMsg))
+import Utils exposing (lift, isLoggedIn)
 
 
 update : BeaconsMsg -> Model -> ( Model, Cmd Msg )
@@ -39,10 +40,8 @@ update msg ({ beacons } as model) =
                 ( { model | beacons = beacons_ }, msg )
 
         FetchBeacons ->
-            ( model
-              -- enclose BeaconsMsg as Msg variant BeaconsMsg (same name)
-            , Cmd.map BeaconsMsg (fetchBeacons model.jwt)
-            )
+            isLoggedIn model <|
+                \jwt -> (lift BeaconsMsg (model, fetchBeacons jwt))
 
         NewDeployment bknNames ->
             newDeployment model
