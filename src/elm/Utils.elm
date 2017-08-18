@@ -34,22 +34,18 @@ defaultReqParams =
     }
 
 
+-- authReq should require a jwt, handling its existence should happen before it gets here
 authReq :
-    Maybe String
+    String
     -> ReqParams a
     -> Decode.Decoder b
     -> Http.Request b
-authReq token ({ headers } as reqParams) decoder =
+authReq jwt ({ headers } as reqParams) decoder =
     let
         params =
             { reqParams | expect = Http.expectJson decoder }
     in
-        case token of
-            Nothing ->
-                Http.request params
-
-            Just jwt ->
-                Http.request { params | headers = (List.append headers [ (Http.header "x-jwt" jwt) ]) }
+        Http.request { params | headers = (List.append headers [ (Http.header "x-jwt" jwt) ]) }
 
 
 

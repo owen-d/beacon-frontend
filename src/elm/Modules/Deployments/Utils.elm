@@ -16,7 +16,7 @@ fetchDeployments jwt =
     in
         Http.send NewDeployments
             (authReq
-                (Just jwt)
+                jwt
                 { defaultReqParams | url = url }
                 decodeDeployments
             )
@@ -30,7 +30,7 @@ fetchDeploymentBeacons jwt name =
     in
         Http.send DeploymentBeaconNames
             (authReq
-                (Just jwt)
+                jwt
                 { defaultReqParams | url = url }
                 (decodeDeploymentBeacons name)
             )
@@ -101,7 +101,7 @@ postDeployment jwt dep =
     in
         Http.send PostDeploymentResponse
             (authReq
-                (Just jwt)
+                jwt
                 params_2
                 (Decode.succeed dep)
             )

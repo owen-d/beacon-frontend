@@ -5,6 +5,7 @@ import Json.Decode as Decode
 import Modules.Beacons.Types exposing (..)
 import Utils exposing (..)
 
+
 fetchBeacons : String -> Cmd BeaconsMsg
 fetchBeacons jwt =
     let
@@ -13,7 +14,7 @@ fetchBeacons jwt =
     in
         Http.send NewBeacons
             (authReq
-                (Just jwt)
+                jwt
                 { defaultReqParams | url = url }
                 decodeBeacons
             )

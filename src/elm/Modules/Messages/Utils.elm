@@ -14,10 +14,12 @@ decodeMessage =
         (Decode.field "title" Decode.string)
         (Decode.field "url" Decode.string)
 
+
 decodeMessages : Decode.Decoder Messages
 decodeMessages =
     Decode.field "messages"
         (Decode.list decodeMessage)
+
 
 encodeMessage : Message -> Encode.Value
 encodeMessage msg =
@@ -30,6 +32,7 @@ encodeMessage msg =
     in
         Encode.object attributes
 
+
 fetchMessages : String -> Cmd Msg
 fetchMessages jwt =
     let
@@ -38,13 +41,14 @@ fetchMessages jwt =
     in
         Http.send NewMessages
             (authReq
-                (Just jwt)
+                jwt
                 { defaultReqParams | url = url }
                 decodeMessages
             )
 
+
 postMessage : String -> Message -> Cmd Msg
-postMessage  jwt msg =
+postMessage jwt msg =
     let
         url =
             (++) apiUrl "/messages"
@@ -60,7 +64,7 @@ postMessage  jwt msg =
     in
         Http.send PostMessageResponse
             (authReq
-                (Just jwt)
+                jwt
                 params_2
                 (Decode.succeed msg)
             )
