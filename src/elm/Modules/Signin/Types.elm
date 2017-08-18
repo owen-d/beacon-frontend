@@ -17,3 +17,4 @@ model =
 type SigninMsg
     = Mdl (Material.Msg SigninMsg)
     | InitiateGoogleSignin
+    | HandleGoogleSignin String String

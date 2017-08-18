@@ -5,6 +5,7 @@ import Modules.Deployments.Types as DepTypes exposing (Msg(FetchDeployments))
 import Modules.Layout.Types exposing (LayoutMsg(SelectTab))
 import Modules.Messages.Types as MsgTypes exposing (Msg(FetchMessages))
 import Modules.Route.Types exposing (..)
+import Modules.Signin.Types exposing(SigninMsg(..))
 import Navigation exposing (Location)
 import RouteUrl exposing (..)
 import Types exposing (Model, Msg(..))
@@ -47,7 +48,13 @@ routeInit route =
             None
 
         GoogleAuthorizeRoute state code ->
-            None
+            if (state /= Nothing) || (code /= Nothing) then
+                HandleGoogleSignin
+                    (Maybe.withDefault "" state)
+                    (Maybe.withDefault "" code)
+                    |> MsgFor_SigninMsg
+            else
+                Unauthenticated
 
         NotFoundRoute ->
             None

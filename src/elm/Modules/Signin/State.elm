@@ -4,8 +4,14 @@ module Modules.Signin.State exposing (..)
 
 import Material
 import Modules.Signin.Types as SigninTypes exposing (..)
+import Navigation
 import Types exposing (Msg(MsgFor_SigninMsg), Model)
 import Utils exposing (lift, isLoggedIn)
+
+
+initGoogleSigninEndpoint : String
+initGoogleSigninEndpoint =
+    "https://api.sharecro.ws/v1/oauth/google/init"
 
 
 update : SigninMsg -> Model -> ( Model, Cmd Msg )
@@ -21,4 +27,7 @@ update msg model =
                     |> mapModel
 
             InitiateGoogleSignin ->
+                ( model, Navigation.load initGoogleSigninEndpoint )
+
+            HandleGoogleSignin state code ->
                 model ! []
