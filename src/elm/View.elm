@@ -3,13 +3,13 @@ module View exposing (..)
 -- imports
 
 import Html exposing (Html, text, node)
-import Html.Attributes exposing (name, content)
 import Modules.Beacons.View as BeaconsView
 import Modules.Deployments.View as DeploymentsView
 import Modules.Layout.Types exposing (TabWrapper)
 import Modules.Layout.View as LayoutView
 import Modules.Messages.View as MessagesView
 import Modules.Route.Types exposing (Route(..))
+import Modules.Signin.View as SigninView
 import Types exposing (..)
 
 
@@ -24,34 +24,25 @@ tabs =
 view : Model -> Html.Html Msg
 view model =
     LayoutView.view
-        (addViewportMeta page)
+        page
         tabs
         model
 
 
 page : Model -> Html Msg
 page model =
-    case model.route of
-        DeploymentsRoute ->
-            DeploymentsView.view model
+    if model.jwt == Nothing then
+        SigninView.view model
+    else
+        case model.route of
+            DeploymentsRoute ->
+                DeploymentsView.view model
 
-        BeaconsRoute ->
-            BeaconsView.view model
+            BeaconsRoute ->
+                BeaconsView.view model
 
-        MessagesRoute ->
-            MessagesView.view model
+            MessagesRoute ->
+                MessagesView.view model
 
-        _ ->
-            BeaconsView.view model
-
-
-
--- for injecting viewport meta tag via elm reactor
-
-
-addViewportMeta : (Model -> Html Msg) -> Model -> Html Msg
-addViewportMeta mapper model =
-    Html.div []
-        [ node "meta" [ name "viewport", content "width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" ] []
-        , mapper model
-        ]
+            _ ->
+                BeaconsView.view model

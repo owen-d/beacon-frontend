@@ -15,7 +15,7 @@ view viewFn tabs model =
     Layout.render Mdl
         model.mdl
         [ Layout.fixedHeader
-        , Layout.selectedTab <| selectedTab model.route tabs
+        , selectedTab model.route tabs
         , Layout.onSelectTab <| selectTab tabs
         , Layout.transparentHeader
         ]
@@ -83,7 +83,7 @@ selectTab tabs idx =
 {- find the idx for a given route -}
 
 
-selectedTab : Route -> List TabWrapper -> Int
+selectedTab : Route -> List TabWrapper -> Layout.Property m
 selectedTab route tabs =
     -- find index of the route which is selected
     List.indexedMap
@@ -97,7 +97,10 @@ selectedTab route tabs =
         tabs
         |> List.filter (\a -> (>=) a 0)
         |> List.head
-        |> Maybe.withDefault 0
+        |> \x -> case x of
+                     Just idx ->
+                         Layout.selectedTab idx
+                     Nothing -> Options.nop
 
 
 stylesheet : Html a
