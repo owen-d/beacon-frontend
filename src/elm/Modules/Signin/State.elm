@@ -6,12 +6,12 @@ import Material
 import Modules.Signin.Types as SigninTypes exposing (..)
 import Navigation
 import Types exposing (Msg(MsgFor_SigninMsg), Model)
-import Utils exposing (lift, isLoggedIn)
+import Utils exposing (lift, isLoggedIn, apiUrl)
 
 
 initGoogleSigninEndpoint : String
 initGoogleSigninEndpoint =
-    "https://api.sharecro.ws/v1/oauth/google/init"
+    (++) apiUrl "/auth/google/init"
 
 
 update : SigninMsg -> Model -> ( Model, Cmd Msg )
