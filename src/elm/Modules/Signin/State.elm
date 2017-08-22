@@ -2,8 +2,11 @@ module Modules.Signin.State exposing (..)
 
 -- imports
 
+import Http
 import Material
+import Modules.Route.Types exposing (Route(BeaconsRoute))
 import Modules.Signin.Types as SigninTypes exposing (..)
+import Modules.Signin.Utils as SigninUtils exposing (signinUser)
 import Modules.Storage.Local exposing (..)
 import Navigation
 import Types exposing (Msg(MsgFor_SigninMsg, None), Model)
@@ -16,7 +19,7 @@ initGoogleSigninEndpoint =
 
 
 update : SigninMsg -> Model -> ( Model, Cmd Msg )
-update msg model =
+update msg ({ signin } as model) =
     let
         mapModel : ( SigninModel, Cmd Msg ) -> ( Model, Cmd Msg )
         mapModel ( signinMod, cmd ) =
@@ -31,10 +34,14 @@ update msg model =
                 ( model, Navigation.load initGoogleSigninEndpoint )
 
             HandleGoogleSignin state code ->
-                model ! []
+                lift MsgFor_SigninMsg ( { signin | state = Just state, code = Just code }, signinUser state code )
+                    |> mapModel
 
             MsgFor_LocalStorageMsg msg_ ->
                 handleLocalStorageMsg msg_ model
+
+            NewUserInfo msg_ ->
+                newUserInfo msg_ model
 
 
 handleLocalStorageMsg : LocalStorageMsg -> Model -> ( Model, Cmd Msg )
@@ -51,6 +58,16 @@ handleLocalStorageMsg msg model =
 
         Save ( key, val ) ->
             ( model, storageSet ( key, val ) )
+
+
+newUserInfo : Result Http.Error UserInfo -> Model -> ( Model, Cmd Msg )
+newUserInfo res model =
+    case res of
+        Ok userinfo ->
+            { model | jwt = Just userinfo.jwt, user = Just userinfo.user, route = BeaconsRoute } ! []
+
+        Err e ->
+            model ! []
 
 
 subscriptions : Model -> Sub Msg

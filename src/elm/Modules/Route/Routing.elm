@@ -23,6 +23,8 @@ matchers =
         , map GoogleAuthorizeRoute <|
             s "signin"
                 </> s "oauth"
+                </> s "google"
+                </> s "authorize"
                 <?> stringParam "state"
                 <?> stringParam "code"
         ]
@@ -48,7 +50,7 @@ routeInit route =
             None
 
         GoogleAuthorizeRoute state code ->
-            if (state /= Nothing) || (code /= Nothing) then
+            if (state /= Nothing) && (code /= Nothing) then
                 HandleGoogleSignin
                     (Maybe.withDefault "" state)
                     (Maybe.withDefault "" code)

@@ -54,3 +54,7 @@ view model =
         signinCard prefix model.signin
             :: []
             |> Options.div [ Options.center ]
+
+googleAuthorizeView : Model -> Html Msg
+googleAuthorizeView model =
+    view model

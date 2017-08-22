@@ -31,20 +31,21 @@ view model =
 
 page : Model -> Html Msg
 page model =
-    if model.jwt == Nothing then
-        SigninView.view model
-    else
-        case model.route of
-            DeploymentsRoute ->
-                DeploymentsView.view model
+    case model.route of
+        DeploymentsRoute ->
+            DeploymentsView.view model
 
-            BeaconsRoute ->
-                BeaconsView.view model
+        BeaconsRoute ->
+            BeaconsView.view model
 
-            MessagesRoute ->
-                MessagesView.view model
+        MessagesRoute ->
+            MessagesView.view model
 
-            SigninRoute ->
-                SigninView.view model
-            _ ->
-                BeaconsView.view model
+        SigninRoute ->
+            SigninView.view model
+
+        GoogleAuthorizeRoute maybeState maybeCode ->
+            SigninView.googleAuthorizeView model
+
+        _ ->
+            BeaconsView.view model

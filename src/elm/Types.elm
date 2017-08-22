@@ -8,7 +8,7 @@ import Modules.Deployments.Types as Deployments
 import Modules.Layout.Types exposing (LayoutMsg)
 import Modules.Messages.Types as Messages
 import Modules.Route.Types exposing (Route(..))
-import Modules.Signin.Types as SigninTypes exposing (SigninMsg, SigninModel)
+import Modules.Signin.Types as SigninTypes exposing (SigninMsg, SigninModel, User)
 
 
 type alias Model =
@@ -33,12 +33,6 @@ model =
     , deployments = Deployments.model
     , messages = Messages.model
     , signin = SigninTypes.model
-    }
-
-
-type alias User =
-    { id : String
-    , email : String
     }
 
 
