@@ -4,15 +4,23 @@ module Modules.Signin.Utils exposing (..)
 
 import Http exposing (jsonBody)
 import Json.Decode as Decode
-import Modules.Signin.Types exposing(..)
+import Modules.Signin.Types exposing (..)
+import QueryString exposing (empty, add, render)
 import Utils exposing (..)
 
 
 signinUser : String -> String -> Cmd SigninMsg
 signinUser state code =
     let
-        url =
+        baseUrl =
             (++) apiUrl "/auth/google/authorize"
+
+        url =
+            empty
+                |> add "state" state
+                |> add "code" code
+                |> render
+                |> (++) baseUrl
     in
         Http.send NewUserInfo (Http.get url decodeUserInfo)
 
