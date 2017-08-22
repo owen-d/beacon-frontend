@@ -3,6 +3,7 @@ module Main exposing (..)
 import Material
 import Material.Layout as Layout
 import Modules.Route.Routing exposing (delta2url, location2messages)
+import Modules.Signin.State as SigninState
 import RouteUrl
 import State exposing (..)
 import Types exposing (..)
@@ -19,7 +20,7 @@ main =
         , delta2url = delta2url
         , location2messages = location2messages
         , update = State.update
-        , subscriptions = Material.subscriptions Mdl
+        , subscriptions = subs
         , view = View.view
         }
 
@@ -27,3 +28,11 @@ main =
 init : ( Model, Cmd Msg )
 init =
     ( { model | mdl = Layout.setTabsWidth 873 model.mdl }, Cmd.batch [ Layout.sub0 Mdl ] )
+
+
+subs : Model -> Sub Msg
+subs model =
+    Sub.batch
+        [ Material.subscriptions Mdl model
+        , SigninState.subscriptions model
+        ]
