@@ -21,13 +21,17 @@ import Types exposing (Model, Msg(MsgFor_SigninMsg))
 -}
 
 
+googleButtonPath : String
+googleButtonPath =
+    "static/img/btn_google_dark.svg"
+
+
 signinCard : List Int -> SigninModel -> Html Msg
 signinCard prefix model =
     Card.view []
         [ Card.title [] [ Card.head [] [ Options.styled p [ Typo.title ] [ text "Sign in" ] ] ]
         , Card.actions []
-            [ -- create a deployment from beacon
-              Button.render (MsgFor_SigninMsg << Mdl)
+            [ Button.render (MsgFor_SigninMsg << Mdl)
                 (List.append prefix [ 1 ])
                 model.mdl
                 [ Button.raised
@@ -35,7 +39,7 @@ signinCard prefix model =
                 , Options.onClick <| MsgFor_SigninMsg InitiateGoogleSignin
                 ]
                 [ img
-                    [ src "static/img/btn_google_dark.svg"
+                    [ src googleButtonPath
                     , style [ ( "height", "100%" ) ]
                     ]
                     []
@@ -54,6 +58,7 @@ view model =
         signinCard prefix model.signin
             :: []
             |> Options.div [ Options.center ]
+
 
 googleAuthorizeView : Model -> Html Msg
 googleAuthorizeView model =
