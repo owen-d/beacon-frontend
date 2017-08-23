@@ -23,7 +23,7 @@ import Types exposing (Model, Msg(MsgFor_SigninMsg))
 
 googleButtonPath : String
 googleButtonPath =
-    "static/img/btn_google_dark.svg"
+    "static/assets/img/btn_google_dark.svg"
 
 
 signinCard : List Int -> SigninModel -> Html Msg
