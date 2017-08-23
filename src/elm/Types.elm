@@ -36,6 +36,10 @@ model =
     }
 
 
+type alias Flags =
+    { jwt : Maybe String }
+
+
 
 -- state updates
 

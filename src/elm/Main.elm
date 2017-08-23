@@ -13,9 +13,9 @@ import View exposing (..)
 -- each dir should have: utils (async, helpers), State (update fns, etc), View (rendering logic), Types (models, etc)
 
 
-main : RouteUrl.RouteUrlProgram Never Model Msg
+main : RouteUrl.RouteUrlProgram Flags Model Msg
 main =
-    RouteUrl.program
+    RouteUrl.programWithFlags
         { init = init
         , delta2url = delta2url
         , location2messages = location2messages
@@ -25,9 +25,9 @@ main =
         }
 
 
-init : ( Model, Cmd Msg )
-init =
-    ( { model | mdl = Layout.setTabsWidth 873 model.mdl }, Cmd.batch [ Layout.sub0 Mdl ] )
+init : Flags -> ( Model, Cmd Msg )
+init ({ jwt } as flags) =
+    ( { model | jwt = jwt, mdl = Layout.setTabsWidth 873 model.mdl }, Cmd.batch [ Layout.sub0 Mdl ] )
 
 
 subs : Model -> Sub Msg
