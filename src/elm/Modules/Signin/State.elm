@@ -64,7 +64,7 @@ newUserInfo : Result Http.Error UserInfo -> Model -> ( Model, Cmd Msg )
 newUserInfo res model =
     case res of
         Ok userinfo ->
-            { model | jwt = Just userinfo.jwt, user = Just userinfo.user, route = BeaconsRoute } ! []
+            ({ model | jwt = Just userinfo.jwt, user = Just userinfo.user, route = BeaconsRoute }, storageSet (jwtLocalKey, userinfo.jwt))
 
         Err e ->
             model ! []

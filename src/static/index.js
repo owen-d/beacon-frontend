@@ -11,7 +11,7 @@ app.ports.storageGet.subscribe(function(key) {
   app.ports.storageReceive.send([key, localstorage.getItem(key)]);
 });
 
-app.ports.storageSet.subscribe(function(key, val) {
-  localStorage.setItem(key, val);
-  app.porst.storageSetReceive.send(null);
+app.ports.storageSet.subscribe(function(tuple) {
+  localStorage.setItem(tuple[0], tuple[1]);
+  app.ports.storageSetReceive.send(null);
 });
