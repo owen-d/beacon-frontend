@@ -82,7 +82,7 @@ viewBeaconTable prefix model =
                                         ]
                                         []
                                     ]
-                                , Table.td [] [ text bkn.name ]
+                                , Table.td [] [ text <| String.right 6 bkn.name ]
                                 , Table.td [] [ text bkn.deployName ]
                                 , Table.td [] [ text "true" ]
                                 ]
@@ -105,7 +105,7 @@ sortingHeader model field =
                     "Enabled"
 
                 BDeployment ->
-                    "Current Campaign"
+                    "Campaign"
 
         match =
             (==) model.orderField field
@@ -153,9 +153,17 @@ beaconButtons prefix ({ beacons, selected } as model) =
         , Button.ripple
         , Options.onClick <| BeaconsMsg <| NewDeployment selected
         , Options.css "float" "right"
-        , if (Set.isEmpty selected) then Button.disabled else nop
+        , if (Set.isEmpty selected) then
+            Button.disabled
+          else
+            nop
         ]
-        [ text "create a campaign with these beacon(s)" ]
+        [ text <|
+            if Set.size model.selected > 1 then
+                "create a campaign with these beacons"
+            else
+                "create a campaign with this beacon"
+        ]
     ]
 
 
