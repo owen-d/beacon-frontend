@@ -4,7 +4,7 @@ module Modules.Signin.State exposing (..)
 
 import Http
 import Material
-import Modules.Route.Types exposing (Route(BeaconsRoute))
+import Modules.Route.Types exposing (Route(BeaconsRoute, SigninRoute))
 import Modules.Signin.Types as SigninTypes exposing (..)
 import Modules.Signin.Utils as SigninUtils exposing (signinUser)
 import Modules.Storage.Local exposing (..)
@@ -43,6 +43,9 @@ update msg ({ signin } as model) =
             NewUserInfo msg_ ->
                 newUserInfo msg_ model
 
+            Signout ->
+                signout model
+
 
 handleLocalStorageMsg : LocalStorageMsg -> Model -> ( Model, Cmd Msg )
 handleLocalStorageMsg msg model =
@@ -64,7 +67,7 @@ newUserInfo : Result Http.Error UserInfo -> Model -> ( Model, Cmd Msg )
 newUserInfo res model =
     case res of
         Ok userinfo ->
-            ({ model | jwt = Just userinfo.jwt, user = Just userinfo.user, route = BeaconsRoute }, storageSet (jwtLocalKey, userinfo.jwt))
+            ( { model | jwt = Just userinfo.jwt, user = Just userinfo.user, route = BeaconsRoute }, storageSet ( jwtLocalKey, userinfo.jwt ) )
 
         Err e ->
             model ! []
@@ -76,3 +79,8 @@ subscriptions model =
         [ storageReceive (Receive >> MsgFor_LocalStorageMsg >> MsgFor_SigninMsg)
         , storageSetReceive (always None)
         ]
+
+
+signout : Model -> ( Model, Cmd Msg )
+signout model =
+    ( { model | jwt = Nothing, route = SigninRoute }, storageRemove jwtLocalKey )

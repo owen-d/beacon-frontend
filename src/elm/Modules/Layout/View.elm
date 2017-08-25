@@ -7,7 +7,8 @@ import Material.Layout as Layout
 import Material.Options as Options exposing (css)
 import Modules.Layout.Types exposing (LayoutMsg(SelectTab), TabWrapper)
 import Modules.Route.Types exposing (Route(BeaconsRoute))
-import Types exposing (Model, Msg(Mdl, LayoutMsg, None))
+import Modules.Signin.Types exposing (SigninMsg(Signout))
+import Types exposing (Model, Msg(Mdl, LayoutMsg, None, MsgFor_SigninMsg))
 
 
 view : (Model -> Html Msg) -> List TabWrapper -> Model -> Html Msg
@@ -19,7 +20,7 @@ view viewFn tabs model =
         , Layout.onSelectTab <| selectTab tabs
         , Layout.transparentHeader
         ]
-        { header = header
+        { header = header model
         , drawer = []
         , tabs = ( List.map (\( name, _ ) -> text name) tabs, [] )
         , main =
@@ -30,14 +31,26 @@ view viewFn tabs model =
         }
 
 
-header : List (Html Msg)
-header =
+header : Model -> List (Html Msg)
+header model =
     [ Layout.row
-        [ css "height" "8em"
+        [ css "height" "6em"
         , css "transition" "height 333ms ease-in-out 0s"
         ]
         [ Layout.title [] [ text "Beacon Thing" ]
         , Layout.spacer
+        , Layout.navigation []
+            [ Layout.link
+                [ Options.onClick <| MsgFor_SigninMsg Signout
+                , Layout.href "javascript:void(0)"
+                ]
+                [ text <|
+                    if model.jwt == Nothing then
+                        "Sign in"
+                    else
+                        "Sign out"
+                ]
+            ]
         ]
     ]
 
@@ -97,10 +110,13 @@ selectedTab route tabs =
         tabs
         |> List.filter (\a -> (>=) a 0)
         |> List.head
-        |> \x -> case x of
-                     Just idx ->
-                         Layout.selectedTab idx
-                     Nothing -> Options.nop
+        |> \x ->
+            case x of
+                Just idx ->
+                    Layout.selectedTab idx
+
+                Nothing ->
+                    Options.nop
 
 
 stylesheet : Html a

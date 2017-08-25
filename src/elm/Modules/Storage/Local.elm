@@ -9,10 +9,13 @@ port storageGet : String -> Cmd msg
 port storageReceive : (( String, Maybe String ) -> msg) -> Sub msg
 
 
-port storageSet : (String, String) -> Cmd msg
+port storageSet : ( String, String ) -> Cmd msg
 
 
 port storageSetReceive : (() -> msg) -> Sub msg
+
+
+port storageRemove : String -> Cmd msg
 
 
 type LocalStorageMsg

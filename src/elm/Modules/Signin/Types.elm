@@ -45,3 +45,4 @@ type SigninMsg
     | HandleGoogleSignin String String
     | NewUserInfo (Result Http.Error UserInfo)
     | MsgFor_LocalStorageMsg LocalStorageMsg
+    | Signout
