@@ -1,5 +1,6 @@
 module Modules.Deployments.State exposing (..)
 
+import Dict exposing (Dict)
 import Http
 import Material
 import Material.Table as Table
@@ -39,7 +40,7 @@ update msg ({ deployments } as model) =
 
             FetchDeployments ->
                 isLoggedIn model <|
-                \jwt -> lift DeploymentsMsg ( model, fetchDeployments jwt )
+                    \jwt -> lift DeploymentsMsg ( model, fetchDeployments jwt )
 
             SelectTab idx ->
                 selectTab idx deployments
@@ -55,7 +56,7 @@ update msg ({ deployments } as model) =
 
             PostDeployment dep ->
                 isLoggedIn model <|
-                \jwt -> lift DeploymentsMsg ( model, postDeployment jwt dep )
+                    \jwt -> lift DeploymentsMsg ( model, postDeployment jwt dep )
 
             PostDeploymentResponse msg_ ->
                 handlePostedDeployment msg_ deployments
@@ -99,12 +100,27 @@ reorder field model =
 
 newDeployments : Result Http.Error Deployments -> Model -> ( Model, Cmd Types.Msg )
 newDeployments res model =
-    case res of
-        Ok deployments ->
-            ( { model | deployments = deployments }, Cmd.none )
+    let
+        -- need a fn to extract bknNames into a dict: <depName, bNames>, as deployments endpoint shallowly fetches
+        -- deployments metadata. This allows us to retained cached beacons.
+        toDict : Deployments -> Dict String (List String)
+        toDict deps =
+            List.map (\dep -> ( dep.name, dep.beacons )) deps
+                |> Dict.fromList
+    in
+        case res of
+            Ok deployments ->
+                let
+                    bknsDict =
+                        toDict model.deployments
 
-        Err e ->
-            ( { model | deploymentsErr = Just e }, Cmd.none )
+                    depsWithBkns =
+                        List.map (\dep -> { dep | beacons = Maybe.withDefault [] <| Dict.get dep.name bknsDict }) deployments
+                in
+                    ( { model | deployments = depsWithBkns }, Cmd.none )
+
+            Err e ->
+                ( { model | deploymentsErr = Just e }, Cmd.none )
 
 
 rotate : Maybe Table.Order -> Maybe Table.Order
