@@ -8,8 +8,9 @@ import Modules.Deployments.Types as DepTypes exposing (..)
 import Modules.Deployments.Utils exposing (..)
 import Modules.Messages.State exposing (updateMsg)
 import Modules.Messages.Types exposing (Message, EditMsg(..), createMessage)
+import Modules.Messages.Utils exposing (fetchMessages)
 import Modules.Utils.View exposing (toggle)
-import Types exposing (Msg(DeploymentsMsg))
+import Types exposing (Msg(DeploymentsMsg, MessagesMsg))
 import Utils exposing (lift, isLoggedIn, uniqAppend)
 
 
@@ -39,8 +40,7 @@ update msg ({ deployments } as model) =
                     |> mapDepModel
 
             FetchDeployments ->
-                isLoggedIn model <|
-                    \jwt -> lift DeploymentsMsg ( model, fetchDeployments jwt )
+                handleFetchDeployments model
 
             SelectTab idx ->
                 selectTab idx deployments
@@ -189,6 +189,7 @@ handlePostedDeployment res model =
             let
                 updatedDeps =
                     uniqAppend .name False model.deployments dep
+
                 m1 =
                     { model | deployments = updatedDeps }
 
@@ -222,3 +223,28 @@ handleDeploymentBeacons res model =
 
             Err e ->
                 { model | deploymentsErr = Just e } ! []
+
+
+
+-- handleFetchDeployments will fetch deps & optionally fetch messages if none exist
+
+
+handleFetchDeployments : Types.Model -> ( Types.Model, Cmd Types.Msg )
+handleFetchDeployments ({ messages, deployments } as model) =
+    isLoggedIn model
+        (\jwt ->
+            let
+                fetchDepsCmd =
+                    Cmd.map DeploymentsMsg <| fetchDeployments jwt
+            in
+                let
+                    cmd =
+                        if List.length messages.messages == 0 then
+                            Cmd.batch <|
+                                (Cmd.map MessagesMsg <| fetchMessages jwt)
+                                    :: [ fetchDepsCmd ]
+                        else
+                            fetchDepsCmd
+                in
+                    ( model, cmd )
+        )
