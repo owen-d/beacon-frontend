@@ -2,6 +2,7 @@ module Utils exposing (..)
 
 -- imports
 
+import Dict
 import Http
 import Json.Decode as Decode
 import Json.Encode as Encode
@@ -94,3 +95,28 @@ isLoggedIn model passthrough =
 
         Just jwt ->
             passthrough jwt
+
+
+
+-- uniqAppend will add an item to a list, keying it via a function. also allows preference for new or old values.
+
+
+uniqAppend : (a -> comparable) -> Bool -> List a -> a -> List a
+uniqAppend keyFn replace col item =
+    let
+        newKey =
+            keyFn item
+
+        dict =
+            List.map (\x -> ( keyFn x, x )) col
+                |> Dict.fromList
+
+        exists =
+            Dict.member newKey dict
+    in
+        if exists && not replace then
+            col
+        else
+            Dict.insert newKey item dict
+                |> Dict.toList
+                |> List.map (\( key, val ) -> val)

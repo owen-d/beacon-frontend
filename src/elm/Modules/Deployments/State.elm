@@ -10,7 +10,7 @@ import Modules.Messages.State exposing (updateMsg)
 import Modules.Messages.Types exposing (Message, EditMsg(..), createMessage)
 import Modules.Utils.View exposing (toggle)
 import Types exposing (Msg(DeploymentsMsg))
-import Utils exposing (lift, isLoggedIn)
+import Utils exposing (lift, isLoggedIn, uniqAppend)
 
 
 update : DepTypes.Msg -> Types.Model -> ( Types.Model, Cmd Types.Msg )
@@ -187,8 +187,10 @@ handlePostedDeployment res model =
         Ok dep ->
             -- add dep to dep list
             let
+                updatedDeps =
+                    uniqAppend .name False model.deployments dep
                 m1 =
-                    { model | deployments = dep :: (.deployments model) }
+                    { model | deployments = updatedDeps }
 
                 m2 =
                     { m1 | curTab = 0 }
