@@ -105,5 +105,5 @@ postDeployment jwt newBeacons dep =
             (authReq
                 jwt
                 params_2
-                (Decode.succeed dep)
+                (Decode.succeed depWithNewBeacons)
             )

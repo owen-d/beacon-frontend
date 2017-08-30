@@ -193,7 +193,7 @@ handlePostedDeployment res model =
             -- add dep to dep list
             let
                 updatedDeps =
-                    uniqAppend .name False model.deployments dep
+                    uniqAppend .name True model.deployments dep
 
                 m1 =
                     { model | deployments = updatedDeps }
