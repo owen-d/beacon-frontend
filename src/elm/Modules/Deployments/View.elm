@@ -105,7 +105,7 @@ viewDeploymentsTable prefix model =
                                             Table.tr []
                                                 [ Table.td [ Options.attribute <| Html.Attributes.colspan <| List.length headers ]
                                                     [ deploymentCard "New beacons" diffBkns
-                                                    , saveDepButton (List.append prefix [ idx, 0 ]) dep
+                                                    , saveDepButton (List.append prefix [ idx, 0 ]) "save to campaign" dep
                                                     ]
                                                 ]
                                                 :: currentBknsCard
@@ -239,13 +239,13 @@ editDeployment prefix rootModel =
             -- add button at end
             |> (\a ->
                     List.append a
-                        [ saveDepButton (List.append prefix [ 2 ]) editingDep ]
+                        [ saveDepButton (List.append prefix [ 2 ]) "save campaign" editingDep ]
                )
             |> Options.div []
 
 
-saveDepButton : List Int -> Deployment -> Html Types.Msg
-saveDepButton prefix dep =
+saveDepButton : List Int -> String -> Deployment -> Html Types.Msg
+saveDepButton prefix buttonText dep =
     Button.render (DeploymentsMsg << Mdl)
         (List.append prefix [ 0 ])
         model.mdl
@@ -254,7 +254,7 @@ saveDepButton prefix dep =
         , Options.css "float" "right"
         , Options.onClick <| DeploymentsMsg <| PostDeployment dep
         ]
-        [ text "save campaign" ]
+        [ text buttonText ]
 
 
 editDepMsgTabs : List Int -> Types.Model -> Html Types.Msg
