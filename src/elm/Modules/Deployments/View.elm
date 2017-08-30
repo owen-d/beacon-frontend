@@ -16,6 +16,7 @@ import Modules.Deployments.Types as DeploymentTypes exposing (..)
 import Modules.Messages.Types as MsgTypes exposing (EditMsg(..), blankMsg)
 import Modules.Messages.View exposing (editMessage)
 import Modules.Utils.View exposing (..)
+import Set
 import Types exposing (Msg(DeploymentsMsg))
 
 
@@ -81,11 +82,15 @@ viewDeploymentsTable prefix model =
                                 , Table.td [] [ text <| Maybe.withDefault "" dep.messageName ]
                                 ]
                                 :: if (isSelected (key dep) dModel.selected) then
-                                    Table.tr []
+                                    [ Table.tr []
                                         [ Table.td [ Options.attribute <| Html.Attributes.colspan <| List.length headers ]
-                                            [ deploymentCard dep ]
+                                            [ deploymentCard "New beacons" <| (.beacons >> .selected >> Set.toList) model ]
                                         ]
-                                        :: []
+                                    , Table.tr []
+                                        [ Table.td [ Options.attribute <| Html.Attributes.colspan <| List.length headers ]
+                                            [ deploymentCard "Current beacons" dep.beacons ]
+                                        ]
+                                    ]
                                    else
                                     []
                         )
@@ -151,11 +156,11 @@ deploymentsTabs prefix ({ deployments } as model) =
         ]
         [ Tabs.label
             []
-            [ text "Campaigns" ]
+            [ text "Existing" ]
         , Tabs.label
             []
             -- for similar tab sizes
-            [ Options.span [ Options.css "width" "8em" ] [ text "Edit" ] ]
+            [ Options.span [ Options.css "width" "8em" ] [ text "New" ] ]
         ]
         [ case deployments.curTab of
             1 ->
@@ -303,8 +308,8 @@ viewMsgs prefix ({ deployments, messages } as model) =
                 messages.messages
 
 
-deploymentCard : Deployment -> Html msg
-deploymentCard dep =
+deploymentCard : String -> List String -> Html msg
+deploymentCard title bkns =
     let
         mesh : List (List String) -> List String -> Int -> List (List String)
         mesh accum col chunksize =
@@ -320,7 +325,7 @@ deploymentCard dep =
                     chunksize
 
         bknMesh =
-            mesh [] dep.beacons 4
+            mesh [] bkns 4
 
         cell =
             Options.css "margin" "0.75rem 0.5rem"
@@ -337,7 +342,7 @@ deploymentCard dep =
         Card.view []
             [ Card.title
                 []
-                [ Card.head [] [ text "Associated beacons" ] ]
+                [ Card.head [] [ text title ] ]
             , (List.map
                 (\bkns ->
                     row bkns

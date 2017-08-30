@@ -130,25 +130,11 @@ key =
 newDeployment : Model -> ( Model, Cmd Msg )
 newDeployment ({ beacons, deployments } as model) =
     let
-        bNames =
-            Set.toList beacons.selected
-
-        editingDep =
-            .editingDep deployments
-
-        -- set selected beacons as depBeacons.
-        updatedDep1 =
-            { editingDep | beacons = bNames }
-
-        deps_1 =
-            { deployments | editingDep = updatedDep1 }
-
-        -- set current tab to 'edit pane' on deployments page
-        deps_2 =
-            { deps_1 | curTab = 1 }
+        deps =
+            { deployments | curTab = 0 }
 
         model_ =
-            { model | deployments = deps_2 }
+            { model | deployments = deps }
     in
         -- change route to edit dep page
         ({ model_ | route = DeploymentsRoute }, batchMsgs [DeploymentsMsg DepTypes.FetchDeployments])
