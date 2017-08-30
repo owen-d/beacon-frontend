@@ -4,12 +4,14 @@ module Modules.Signin.State exposing (..)
 
 import Http
 import Material
+import Modules.Beacons.Types as BeaconTypes
 import Modules.Route.Types exposing (Route(BeaconsRoute, SigninRoute))
 import Modules.Signin.Types as SigninTypes exposing (..)
 import Modules.Signin.Utils as SigninUtils exposing (signinUser)
 import Modules.Storage.Local exposing (..)
 import Navigation
-import Types exposing (Msg(MsgFor_SigninMsg, None), Model)
+import Task
+import Types exposing (Msg(MsgFor_SigninMsg, None, BeaconsMsg), Model)
 import Utils exposing (lift, isLoggedIn, apiUrl)
 
 
@@ -67,7 +69,12 @@ newUserInfo : Result Http.Error UserInfo -> Model -> ( Model, Cmd Msg )
 newUserInfo res model =
     case res of
         Ok userinfo ->
-            ( { model | jwt = Just userinfo.jwt, user = Just userinfo.user, route = BeaconsRoute }, storageSet ( jwtLocalKey, userinfo.jwt ) )
+            { model | jwt = Just userinfo.jwt, user = Just userinfo.user, route = BeaconsRoute }
+                ! [ Cmd.batch
+                        [ storageSet ( jwtLocalKey, userinfo.jwt )
+                        , Task.perform identity <| Task.succeed <| BeaconsMsg BeaconTypes.FetchBeacons
+                        ]
+                  ]
 
         Err e ->
             model ! []
