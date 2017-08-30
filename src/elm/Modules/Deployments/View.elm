@@ -83,27 +83,34 @@ viewDeploymentsTable prefix model =
                                 ]
                                 :: if (isSelected (key dep) dModel.selected) then
                                     -- show diff'd beacon selections
-                                    [ Table.tr []
-                                        [ Table.td [ Options.attribute <| Html.Attributes.colspan <| List.length headers ]
-                                            [ let
-                                                selectedBkns =
-                                                    (.selected << .beacons) model
-                                              in
-                                                dep.beacons
-                                                    |> Set.fromList
-                                                    |> Set.diff selectedBkns
-                                                    |> Set.toList
-                                                    |> deploymentCard "New beacons"
-                                            , saveDepButton (List.append prefix [ idx, 0 ]) dep
-                                            ]
-                                        ]
+                                    let
+                                        selectedBkns =
+                                            (.selected << .beacons) model
 
-                                    -- show beacons currently existing on the deployment
-                                    , Table.tr []
-                                        [ Table.td [ Options.attribute <| Html.Attributes.colspan <| List.length headers ]
-                                            [ deploymentCard "Current beacons" dep.beacons ]
-                                        ]
-                                    ]
+                                        -- show beacons currently existing on the deployment
+                                        currentBknsCard =
+                                            Table.tr []
+                                                [ Table.td [ Options.attribute <| Html.Attributes.colspan <| List.length headers ]
+                                                    [ deploymentCard "Current beacons" dep.beacons ]
+                                                ]
+                                                :: []
+
+                                        diffBkns =
+                                            dep.beacons
+                                                |> Set.fromList
+                                                |> Set.diff selectedBkns
+                                                |> Set.toList
+                                    in
+                                        if List.length diffBkns > 0 then
+                                            Table.tr []
+                                                [ Table.td [ Options.attribute <| Html.Attributes.colspan <| List.length headers ]
+                                                    [ deploymentCard "New beacons" diffBkns
+                                                    , saveDepButton (List.append prefix [ idx, 0 ]) dep
+                                                    ]
+                                                ]
+                                                :: currentBknsCard
+                                        else
+                                            currentBknsCard
                                    else
                                     []
                         )
