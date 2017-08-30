@@ -160,9 +160,9 @@ beaconButtons prefix ({ beacons, selected } as model) =
         ]
         [ text <|
             if Set.size model.selected > 1 then
-                "create a campaign with these beacons"
+                "add beacons to a campaign"
             else
-                "create a campaign with this beacon"
+                "add beacon to a campaign"
         ]
     ]
 

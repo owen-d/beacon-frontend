@@ -5,10 +5,11 @@ import Material
 import Material.Table as Table
 import Modules.Beacons.Types as BeaconTypes exposing (..)
 import Modules.Beacons.Utils exposing (..)
+import Modules.Deployments.Types as DepTypes
 import Modules.Route.Types exposing (Route(..))
 import Set exposing (Set)
-import Types exposing (Model, Msg(BeaconsMsg))
-import Utils exposing (lift, isLoggedIn)
+import Types exposing (Model, Msg(BeaconsMsg, DeploymentsMsg))
+import Utils exposing (lift, isLoggedIn, batchMsgs)
 
 
 update : BeaconsMsg -> Model -> ( Model, Cmd Msg )
@@ -150,4 +151,4 @@ newDeployment ({ beacons, deployments } as model) =
             { model | deployments = deps_2 }
     in
         -- change route to edit dep page
-        { model_ | route = DeploymentsRoute } ! []
+        ({ model_ | route = DeploymentsRoute }, batchMsgs [DeploymentsMsg DepTypes.FetchDeployments])

@@ -4,8 +4,8 @@ import Modules.Layout.Types exposing (..)
 import Modules.Messages.Types exposing (Msg(FetchMessages))
 import Modules.Route.Routing exposing (routeInit)
 import Modules.Route.Types exposing (..)
-import Task
 import Types exposing (Model, Msg(..))
+import Utils exposing(batchMsgs)
 
 
 updateLayout : (Types.Msg -> Model -> ( Model, Cmd Types.Msg )) -> LayoutMsg -> Model -> ( Model, Cmd Types.Msg )
@@ -38,13 +38,3 @@ updateLayout super msg model =
                 :: otherMsgs
                 |> batchMsgs
             )
-
-
-batchMsgs : List Types.Msg -> Cmd Types.Msg
-batchMsgs msgs =
-    List.map
-        (\msg ->
-            Task.perform identity <| Task.succeed <| msg
-        )
-        msgs
-        |> Cmd.batch

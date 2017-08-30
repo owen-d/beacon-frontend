@@ -7,6 +7,7 @@ import Http
 import Json.Decode as Decode
 import Json.Encode as Encode
 import Modules.Route.Types exposing (Route(SigninRoute))
+import Task
 import Time
 import Types
 
@@ -120,3 +121,13 @@ uniqAppend keyFn replace col item =
             Dict.insert newKey item dict
                 |> Dict.toList
                 |> List.map (\( key, val ) -> val)
+
+
+batchMsgs : List a -> Cmd a
+batchMsgs msgs =
+    List.map
+        (\msg ->
+            Task.perform identity <| Task.succeed <| msg
+        )
+        msgs
+        |> Cmd.batch
