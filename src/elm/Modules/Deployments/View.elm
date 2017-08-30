@@ -82,11 +82,23 @@ viewDeploymentsTable prefix model =
                                 , Table.td [] [ text <| Maybe.withDefault "" dep.messageName ]
                                 ]
                                 :: if (isSelected (key dep) dModel.selected) then
+                                    -- show diff'd beacon selections
                                     [ Table.tr []
                                         [ Table.td [ Options.attribute <| Html.Attributes.colspan <| List.length headers ]
-                                            [ deploymentCard "New beacons" <| (.beacons >> .selected >> Set.toList) model
-                                            , saveDepButton (List.append prefix [idx, 0]) dep]
+                                            [ let
+                                                selectedBkns =
+                                                    (.selected << .beacons) model
+                                              in
+                                                dep.beacons
+                                                    |> Set.fromList
+                                                    |> Set.diff selectedBkns
+                                                    |> Set.toList
+                                                    |> deploymentCard "New beacons"
+                                            , saveDepButton (List.append prefix [ idx, 0 ]) dep
+                                            ]
                                         ]
+
+                                    -- show beacons currently existing on the deployment
                                     , Table.tr []
                                         [ Table.td [ Options.attribute <| Html.Attributes.colspan <| List.length headers ]
                                             [ deploymentCard "Current beacons" dep.beacons ]
@@ -220,21 +232,23 @@ editDeployment prefix rootModel =
             -- add button at end
             |> (\a ->
                     List.append a
-                        [saveDepButton (List.append prefix [2]) editingDep]
+                        [ saveDepButton (List.append prefix [ 2 ]) editingDep ]
                )
             |> Options.div []
 
+
 saveDepButton : List Int -> Deployment -> Html Types.Msg
 saveDepButton prefix dep =
- Button.render (DeploymentsMsg << Mdl)
-                            (List.append prefix [ 0 ])
-                            model.mdl
-                            [ Button.raised
-                            , Button.ripple
-                            , Options.css "float" "right"
-                            , Options.onClick <| DeploymentsMsg <| PostDeployment dep
-                            ]
-                            [ text "save campaign" ]
+    Button.render (DeploymentsMsg << Mdl)
+        (List.append prefix [ 0 ])
+        model.mdl
+        [ Button.raised
+        , Button.ripple
+        , Options.css "float" "right"
+        , Options.onClick <| DeploymentsMsg <| PostDeployment dep
+        ]
+        [ text "save campaign" ]
+
 
 editDepMsgTabs : List Int -> Types.Model -> Html Types.Msg
 editDepMsgTabs prefix model =
