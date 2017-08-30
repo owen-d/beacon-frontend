@@ -84,8 +84,8 @@ encodeDeployment dep =
         Encode.object <| List.append baseAttrs optionalAttrs
 
 
-postDeployment : String -> Deployment -> Cmd Msg
-postDeployment jwt dep =
+postDeployment : String -> List String -> Deployment -> Cmd Msg
+postDeployment jwt newBeacons dep =
     let
         url =
             (++) apiUrl "/deployments"
@@ -96,8 +96,10 @@ postDeployment jwt dep =
         params_1 =
             { params | method = "POST" }
 
+        depWithNewBeacons =
+            {dep | beacons = List.append newBeacons dep.beacons}
         params_2 =
-            { params_1 | body = jsonBody <| encodeDeployment dep }
+            { params_1 | body = jsonBody <| encodeDeployment depWithNewBeacons }
     in
         Http.send PostDeploymentResponse
             (authReq

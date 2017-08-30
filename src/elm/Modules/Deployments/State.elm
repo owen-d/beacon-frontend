@@ -10,6 +10,7 @@ import Modules.Messages.State exposing (updateMsg)
 import Modules.Messages.Types exposing (Message, EditMsg(..), createMessage)
 import Modules.Messages.Utils exposing (fetchMessages)
 import Modules.Utils.View exposing (toggle)
+import Set
 import Types exposing (Msg(DeploymentsMsg, MessagesMsg))
 import Utils exposing (lift, isLoggedIn, uniqAppend)
 
@@ -55,8 +56,12 @@ update msg ({ deployments } as model) =
                     |> mapDepModel
 
             PostDeployment dep ->
-                isLoggedIn model <|
-                    \jwt -> lift DeploymentsMsg ( model, postDeployment jwt dep )
+                let
+                    newBeacons =
+                        (.beacons >> .selected >> Set.toList) model
+                in
+                    isLoggedIn model <|
+                        \jwt -> lift DeploymentsMsg ( model, postDeployment jwt newBeacons dep )
 
             PostDeploymentResponse msg_ ->
                 handlePostedDeployment msg_ deployments
