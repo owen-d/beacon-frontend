@@ -90,28 +90,30 @@ viewDeploymentsTable prefix model =
 
                                         -- show beacons currently existing on the deployment
                                         currentBknsCard =
-                                            Table.tr []
-                                                [ Table.td [ Options.attribute <| Html.Attributes.colspan <| List.length headers ]
-                                                    [ deploymentCard "Current beacons" dep.beacons ]
-                                                ]
-                                                :: []
+                                            deploymentCard "Current beacons" dep.beacons
 
                                         diffBkns =
                                             dep.beacons
                                                 |> Set.fromList
                                                 |> Set.diff selectedBkns
                                                 |> Set.toList
+
+                                        rowTemplate =
+                                            \col ->
+                                                Table.tr []
+                                                    [ Table.td [ Options.attribute <| Html.Attributes.colspan <| List.length headers ]
+                                                        col
+                                                    ]
                                     in
                                         if List.length diffBkns > 0 then
-                                            Table.tr []
-                                                [ Table.td [ Options.attribute <| Html.Attributes.colspan <| List.length headers ]
-                                                    [ deploymentCard "New beacons" diffBkns
-                                                    , saveDepButton (List.append prefix [ idx, 0 ]) "save to campaign" dep dModel.loading
-                                                    ]
+                                            rowTemplate
+                                                [ saveDepButton (List.append prefix [ idx, 0 ]) "save to campaign" dep dModel.loading
+                                                , deploymentCard "New beacons" diffBkns
+                                                , currentBknsCard
                                                 ]
-                                                :: currentBknsCard
+                                                :: []
                                         else
-                                            currentBknsCard
+                                            rowTemplate [ currentBknsCard ] :: []
                                    else
                                     []
                         )
@@ -240,7 +242,7 @@ editDeployment prefix rootModel =
             -- add button at end
             |> (\a ->
                     List.append a
-                        [ saveDepButton (List.append prefix [ 2 ]) "save campaign" editingDep model.loading]
+                        [ saveDepButton (List.append prefix [ 2 ]) "save campaign" editingDep model.loading ]
                )
             |> Options.div []
 
