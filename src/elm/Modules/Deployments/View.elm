@@ -6,7 +6,8 @@ import Material.Button as Button
 import Material.Card as Card
 import Material.Chip as Chip
 import Material.List as Lists
-import Material.Options as Options exposing (nop, when)
+import Material.Options as Options exposing (nop, when, css)
+import Material.Spinner as Loading
 import Material.Table as Table
 import Material.Tabs as Tabs
 import Material.Textfield as Textfield
@@ -105,7 +106,7 @@ viewDeploymentsTable prefix model =
                                             Table.tr []
                                                 [ Table.td [ Options.attribute <| Html.Attributes.colspan <| List.length headers ]
                                                     [ deploymentCard "New beacons" diffBkns
-                                                    , saveDepButton (List.append prefix [ idx, 0 ]) "save to campaign" dep
+                                                    , saveDepButton (List.append prefix [ idx, 0 ]) "save to campaign" dep dModel.loading
                                                     ]
                                                 ]
                                                 :: currentBknsCard
@@ -180,7 +181,7 @@ deploymentsTabs prefix ({ deployments } as model) =
         , Tabs.label
             []
             -- for similar tab sizes
-            [ Options.span [ Options.css "width" "8em" ] [ text "New" ] ]
+            [ Options.span [ css "width" "8em" ] [ text "New" ] ]
         ]
         [ case deployments.curTab of
             1 ->
@@ -190,7 +191,7 @@ deploymentsTabs prefix ({ deployments } as model) =
                 viewDeploymentsTable (List.append prefix [ 2 ]) model
         ]
         |> \x ->
-            Options.div [ Options.css "min-height" "25rem" ] [ x ]
+            Options.div [ css "min-height" "25rem" ] [ x ]
                 |> (\x -> Options.div [ Options.center ] [ x ])
 
 
@@ -239,22 +240,36 @@ editDeployment prefix rootModel =
             -- add button at end
             |> (\a ->
                     List.append a
-                        [ saveDepButton (List.append prefix [ 2 ]) "save campaign" editingDep ]
+                        [ saveDepButton (List.append prefix [ 2 ]) "save campaign" editingDep model.loading]
                )
             |> Options.div []
 
 
-saveDepButton : List Int -> String -> Deployment -> Html Types.Msg
-saveDepButton prefix buttonText dep =
-    Button.render (DeploymentsMsg << Mdl)
-        (List.append prefix [ 0 ])
-        model.mdl
-        [ Button.raised
-        , Button.ripple
-        , Options.css "float" "right"
-        , Options.onClick <| DeploymentsMsg <| PostDeployment dep
+saveDepButton : List Int -> String -> Deployment -> Bool -> Html Types.Msg
+saveDepButton prefix buttonText dep isLoading =
+    let
+        spinner =
+            Loading.spinner
+                [ Loading.active isLoading
+                , Loading.singleColor True
+                , css "float" "left"
+                ]
+
+        button =
+            Button.render (DeploymentsMsg << Mdl)
+                (List.append prefix [ 0 ])
+                model.mdl
+                [ Button.raised
+                , Button.ripple
+                , css "float" "right"
+                , Options.onClick <| DeploymentsMsg <| PostDeployment dep
+                ]
+                [ text buttonText ]
+    in
+        [ spinner
+        , button
         ]
-        [ text buttonText ]
+            |> Options.div []
 
 
 editDepMsgTabs : List Int -> Types.Model -> Html Types.Msg
@@ -321,7 +336,7 @@ viewMsgs prefix ({ deployments, messages } as model) =
                         ]
                         []
                         :: []
-                        |> Options.div [ Options.css "float" "right" ]
+                        |> Options.div [ css "float" "right" ]
                     ]
     in
         Lists.ul [] <|
@@ -352,7 +367,7 @@ deploymentCard title bkns =
             mesh [] bkns 4
 
         cell =
-            Options.css "margin" "0.75rem 0.5rem"
+            css "margin" "0.75rem 0.5rem"
 
         row =
             List.map
@@ -375,9 +390,9 @@ deploymentCard title bkns =
               )
                 |> List.concat
                 |> Options.div
-                    [ Options.css "display" "flex"
-                    , Options.css "flex-wrap" "wrap"
-                    , Options.css "flex-direction" "row"
+                    [ css "display" "flex"
+                    , css "flex-wrap" "wrap"
+                    , css "flex-direction" "row"
                     ]
                 |> (\a -> Card.actions [] [ a ])
             ]

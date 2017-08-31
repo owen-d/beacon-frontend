@@ -16,6 +16,7 @@ type alias Model =
     , curTab : Int
     , curMsgTab : Int
     , editingDep : Deployment
+    , loading : Bool
     }
 
 
@@ -53,12 +54,14 @@ model =
     , curTab = 0
     , curMsgTab = 0
     , editingDep = blankDep
+    , loading = False
     }
 
 
 blankDep : Deployment
 blankDep =
     Deployment "" Nothing [] Nothing
+
 
 type Msg
     = Toggle Deployment
@@ -71,4 +74,4 @@ type Msg
     | MsgFor_EditDep EditDep
     | PostDeployment Deployment
     | PostDeploymentResponse (Result Http.Error Deployment)
-    | DeploymentBeaconNames (Result Http.Error (String, List String))
+    | DeploymentBeaconNames (Result Http.Error ( String, List String ))

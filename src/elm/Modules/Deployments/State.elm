@@ -59,9 +59,15 @@ update msg ({ deployments } as model) =
                 let
                     newBeacons =
                         (.beacons >> .selected >> Set.toList) model
+
+                    withLoading =
+                        { deployments | loading = True }
+
+                    model_ =
+                        { model | deployments = withLoading }
                 in
                     isLoggedIn model <|
-                        \jwt -> lift DeploymentsMsg ( model, postDeployment jwt newBeacons dep )
+                        \jwt -> lift DeploymentsMsg ( model_, postDeployment jwt newBeacons dep )
 
             PostDeploymentResponse msg_ ->
                 handlePostedDeployment msg_ deployments
@@ -200,8 +206,11 @@ handlePostedDeployment res model =
 
                 m2 =
                     { m1 | curTab = 0 }
+
+                m3 =
+                    { m2 | loading = False }
             in
-                { m2 | editingDep = blankDep } ! []
+                { m3 | editingDep = blankDep } ! []
 
         -- add err prop to errstack
         Err e ->
